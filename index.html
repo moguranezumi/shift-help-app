@@ -1,0 +1,3023 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>シフトヘルプ</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="シフトヘルプ">
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1a1d21; --sub:#6b7280;
+    --line:#e6e8eb; --brand:#2563eb; --brand-d:#1d4ed8;
+    --ok:#16a34a; --danger:#dc2626; --warn:#f59e0b;
+    --r:14px; --shadow:0 1px 3px rgba(16,24,40,.06),0 1px 2px rgba(16,24,40,.04);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",-apple-system,BlinkMacSystemFont,sans-serif;
+    background:var(--bg); color:var(--ink);
+    line-height:1.55; -webkit-font-smoothing:antialiased;
+  }
+  #app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;padding-bottom:24px}
+  .screen{display:none;padding:20px 18px 0}
+  .screen.active{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  h1{font-size:22px;font-weight:800;margin:6px 0 2px;letter-spacing:.02em}
+  h2{font-size:18px;font-weight:700;margin:4px 0 14px}
+  .sub{color:var(--sub);font-size:13.5px;margin:0 0 22px}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow);margin-bottom:14px}
+  label{display:block;font-size:13px;font-weight:600;color:var(--sub);margin:14px 0 6px}
+  label:first-child{margin-top:0}
+  input,select{
+    width:100%;max-width:100%;min-width:0;padding:13px 14px;font-size:16px;border:1.5px solid var(--line);
+    border-radius:10px;background:#fff;color:var(--ink);outline:none;transition:border-color .15s;
+    box-sizing:border-box
+  }
+  input[type=date]{appearance:none;-webkit-appearance:none}
+  input:focus,select:focus{border-color:var(--brand)}
+
+  .btn{
+    width:100%;padding:14px;font-size:16px;font-weight:700;border:none;border-radius:11px;
+    background:var(--brand);color:#fff;cursor:pointer;transition:.15s;margin-top:18px;
+  }
+  .btn:active{transform:scale(.985)}
+  .btn:hover{background:var(--brand-d)}
+  .btn.sec{background:#eef2f7;color:var(--ink)}
+  .btn.sec:hover{background:#e3e9f1}
+  .btn.ok{background:var(--ok)}.btn.ok:hover{filter:brightness(.94)}
+  .btn.danger{background:#fff;color:var(--danger);border:1.5px solid #f3c4c4}
+  .btn.danger:hover{background:#fff5f5}
+  .btn.sm{padding:9px 14px;font-size:13.5px;margin-top:0;width:auto}
+  .btn.ghost{background:transparent;color:var(--brand);margin-top:10px}
+
+  .row{display:flex;gap:10px;align-items:center}
+  .row .btn{margin-top:0}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:4px;flex-wrap:nowrap}
+  .topbar .who{font-size:12.5px;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
+  .topbar .link{flex:0 0 auto;white-space:nowrap;font-size:13px;padding:6px 8px}
+  .link{color:var(--brand);font-size:14px;font-weight:600;cursor:pointer;background:none;border:none;padding:0}
+
+  .tabwrap{display:flex;gap:10px;margin-bottom:18px}
+  .tabbtn{flex:1;padding:22px 12px;border-radius:var(--r);border:1.5px solid var(--line);background:#fff;cursor:pointer;text-align:center;transition:.15s}
+  .tabbtn:active{transform:scale(.98)}
+  .tabbtn .ic{font-size:30px}
+  .tabbtn .t{font-weight:700;font-size:15px;margin-top:8px}
+  .tabbtn .d{font-size:11.5px;color:var(--sub);margin-top:3px}
+
+  .item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:var(--shadow)}
+  .item .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .item .date{font-weight:700;font-size:15.5px}
+  .item .time{color:var(--brand);font-weight:700;font-size:15px;margin-top:2px}
+  .item .meta{font-size:12.5px;color:var(--sub);margin-top:6px}
+  .badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+  .badge.open{background:#eff6ff;color:var(--brand)}
+  .badge.mine{background:#f0fdf4;color:var(--ok)}
+  .badge.filled{background:#fef3c7;color:#b45309}
+
+  .empty{text-align:center;color:var(--sub);font-size:13.5px;padding:34px 10px}
+  .empty .ic{font-size:34px;opacity:.4;display:block;margin-bottom:8px}
+
+  .chip{display:inline-flex;align-items:center;gap:6px;background:#eef2f7;border-radius:20px;padding:7px 12px;font-size:13px;font-weight:600;margin:0 8px 8px 0}
+  .chip .x{cursor:pointer;color:var(--danger);font-weight:800}
+  .listrow{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+  .listrow:last-child{border-bottom:none}
+  .listrow .code{font-weight:700;font-size:15px}
+  .listrow .pw{font-size:12px;color:var(--sub);font-family:monospace}
+  .xbtn{background:#fff5f5;color:var(--danger);border:1px solid #f3c4c4;border-radius:8px;width:34px;height:34px;font-size:16px;cursor:pointer;font-weight:700}
+
+  .sectitle{font-size:13px;font-weight:700;color:var(--sub);margin:22px 0 10px;text-transform:none}
+  .timegrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+  .overlay{position:fixed;inset:0;background:rgba(16,24,40,.45);display:none;align-items:center;justify-content:center;padding:24px;z-index:50}
+  .overlay.show{display:flex;animation:fade .2s}
+  .modal{background:#fff;border-radius:18px;padding:24px;max-width:340px;width:100%;text-align:center}
+  .modal h3{margin:0 0 8px;font-size:18px}
+  .modal p{color:var(--sub);font-size:14px;margin:0 0 20px}
+  .modal .row{gap:10px}
+  .modal .btn{margin-top:0}
+
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:30px;font-size:14px;font-weight:600;opacity:0;transition:.25s;z-index:60;pointer-events:none;white-space:nowrap}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .pill{display:inline-block;font-size:11px;font-weight:700;background:#eef2f7;color:var(--sub);padding:3px 10px;border-radius:20px;margin-bottom:14px}
+  .hint{font-size:12px;color:var(--sub);margin-top:8px;line-height:1.5}
+  .rangetbl{width:100%;border-collapse:collapse;font-size:12px;margin:4px 0}
+  .rangetbl th,.rangetbl td{border:1px solid var(--line);padding:6px 8px;text-align:center}
+  .rangetbl th{background:#f8fafc;color:var(--sub);font-weight:600;font-size:11px}
+  .rangetbl td:first-child,.rangetbl th:first-child{text-align:left;white-space:nowrap}
+  .rangetbl tbody td:first-child{font-weight:600;color:var(--ink)}
+  .divider{height:1px;background:var(--line);margin:18px 0}
+  .checkrow{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .checkrow:last-child{border-bottom:none}
+  .checkrow input{width:20px;height:20px;flex:0 0 auto}
+  .checkrow .nm{font-weight:600;font-size:15px}
+  .item-line{margin-top:11px;padding-top:11px;border-top:1px dashed var(--line);font-size:13.5px}
+  .item-line.ok{color:var(--ok);font-weight:600}
+  .item-line.warn{color:var(--warn);font-weight:600}
+  .edit-note{margin-top:11px;padding:11px 12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;font-size:13.5px;font-weight:600;color:#b45309}
+  .edit-note .from{font-weight:400;color:var(--sub);font-size:12.5px;margin-top:3px}
+  .edit-note.seen{background:#f7f8fa;border-color:var(--line);color:var(--sub)}
+  .edit-note.cancel-note{background:#fef2f2;border-color:#fecaca;color:var(--danger)}
+  .badge.cancel{background:#fef2f2;color:var(--danger)}
+  .memo-line{margin-top:8px;font-size:13px;color:#374151;background:#f7f8fa;border-radius:8px;padding:8px 10px}
+  .subhead{font-size:13px;font-weight:700;color:var(--ink);margin:14px 0 8px;padding:6px 10px;background:#eef2f7;border-radius:8px;display:inline-block}
+  .tcheck-head,.tcheck-row{display:grid;grid-template-columns:1fr 44px 50px 44px 44px;align-items:center;gap:4px;padding:8px 4px;border-bottom:1px solid var(--line)}
+  .tcheck-head{font-size:11px;font-weight:700;color:var(--sub);border-bottom:2px solid var(--line)}
+  .tcheck-col{text-align:center}
+  .tcheck-col input{width:20px;height:20px}
+  .tcheck-name .nm{font-weight:600;font-size:14px}
+  .scope-row{display:flex;align-items:center;gap:10px;margin-top:11px;padding-top:11px;border-top:1px dashed var(--line)}
+  .scope-label{font-size:12.5px;font-weight:700;color:var(--sub)}
+  .scope-row select{flex:1;padding:8px 10px;font-size:14px;border:1.5px solid var(--line);border-radius:8px;background:#fff}
+  .notif{position:absolute;top:-7px;right:-7px;min-width:24px;height:24px;padding:0 7px;background:var(--danger);color:#fff;font-size:13px;font-weight:800;border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(220,38,38,.4);border:2px solid #fff}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ 入口 ============ -->
+  <section class="screen active" id="s-entry">
+    <h1>シフトヘルプ</h1>
+    <p class="sub">急なお休みの交代要員を、社内でかんたんに募集・応募。</p>
+    <div class="card">
+      <div class="tabbtn" style="margin-bottom:12px" onclick="go('s-emp-login')">
+        <div class="ic">🙋</div>
+        <div class="t">従業員でログイン</div>
+        <div class="d">ヘルプを依頼する・応募する</div>
+      </div>
+      <div class="tabbtn" style="margin-bottom:12px" onclick="go('s-store-login')">
+        <div class="ic">🏪</div>
+        <div class="t">店舗（管理者）でログイン</div>
+        <div class="d">従業員・応募先店舗の管理</div>
+      </div>
+      <div class="tabbtn" onclick="go('s-hq-login')">
+        <div class="ic">🏢</div>
+        <div class="t">本部でログイン</div>
+        <div class="d">店舗の作成・削除</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 本部ログイン ============ -->
+  <section class="screen" id="s-hq-login">
+    <div class="topbar"><button class="link" onclick="go('s-entry')">← もどる</button></div>
+    <h1>本部ログイン</h1>
+    <p class="sub">店舗の作成・削除を行う管理者用です。</p>
+    <div class="card">
+      <label>本部コード</label>
+      <input id="hq-code" placeholder="" autocomplete="off">
+      <label>パスワード</label>
+      <input id="hq-pw" type="password" placeholder="パスワード" autocomplete="off">
+      <button class="btn" onclick="hqLogin()">ログイン</button>
+      <button class="link" style="margin-top:14px;display:block;width:100%;text-align:center" onclick="go('s-hq-recover')">パスワードを忘れた場合（復旧コードで再設定）</button>
+    </div>
+  </section>
+
+  <!-- ============ 本部パスワード復旧 ============ -->
+  <section class="screen" id="s-hq-recover">
+    <div class="topbar"><button class="link" onclick="go('s-hq-login')">← もどる</button></div>
+    <h1>本部パスワードの復旧</h1>
+    <p class="sub">本部アカウント作成時に発行された復旧コードを入力してください。</p>
+    <div class="card">
+      <label>復旧コード</label>
+      <input id="hq-rec-code" placeholder="例：XXXX-XXXX-XXXX" autocomplete="off">
+      <label>新しいパスワード</label>
+      <input id="hq-rec-new" type="password" autocomplete="off">
+      <label>新しいパスワード（確認）</label>
+      <input id="hq-rec-new2" type="password" autocomplete="off">
+      <p class="hint" style="margin-top:6px">新しいパスワードは、<b>大文字のアルファベット・小文字のアルファベット・数字・記号</b>（!"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~ など）をそれぞれ1文字以上含む<b>8文字以上</b>で設定してください。</p>
+      <button class="btn" onclick="hqRecover()">パスワードを再設定</button>
+      <p class="hint">復旧コードも分からない場合は、システム管理者にご相談ください。</p>
+    </div>
+  </section>
+
+  <!-- ============ 通知設定 ============ -->
+  <section class="screen" id="s-notif-settings">
+    <div class="topbar">
+      <button class="link" onclick="goBackFromNotif()">← もどる</button>
+    </div>
+    <h1>🔔 通知設定</h1>
+    <div class="card">
+      <p style="margin-top:0">プッシュ通知を有効にすると、新しい依頼や応募・編集・キャンセルなどを、アプリを閉じていてもスマホに通知できます。</p>
+      <div id="notif-status" style="font-size:14px;margin:10px 0 14px;padding:10px;border-radius:8px;background:#f7f8fa"></div>
+      <button id="notif-toggle" class="btn" onclick="toggleNotif()">確認中…</button>
+      <p class="hint" style="margin-top:10px">
+        ※ iPhoneで通知を使うには、Safariでこのページを開いて「ホーム画面に追加」した状態でログインしてください。<br>
+        ※ Androidは「アプリをインストール」したホーム画面アイコンから起動するとより安定します。
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ 本部モード ============ -->
+  <section class="screen" id="s-hq">
+    <div class="topbar">
+      <div class="who">🏢 本部モード</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="link" onclick="go('s-notif-settings')">通知</button>
+        <button class="link" onclick="logout()">ログアウト</button>
+      </div>
+    </div>
+    <div class="card" style="background:#fff7ed;border-color:#fed7aa">
+      <div style="font-size:13px;font-weight:700;color:#b45309">🔐 復旧コード（パスワード忘れ時に使用）</div>
+      <div id="hq-recovery-view" style="margin-top:6px;font-family:monospace;font-size:15px;font-weight:700"></div>
+      <p class="hint" style="margin-top:6px">紙やパスワードマネージャに保管してください。パスワード再設定時に新しいコードに更新されます。</p>
+    </div>
+
+    <h2>本部パスワードの変更</h2>
+    <div class="card">
+      <label>現在のパスワード</label>
+      <input id="hq-pw-cur" type="password" autocomplete="off">
+      <label>新しいパスワード</label>
+      <input id="hq-pw-new" type="password" autocomplete="off">
+      <label>新しいパスワード（確認）</label>
+      <input id="hq-pw-new2" type="password" autocomplete="off">
+      <p class="hint" style="margin-top:6px">新しいパスワードは、<b>大文字のアルファベット・小文字のアルファベット・数字・記号</b>（!"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~ など）をそれぞれ1文字以上含む<b>8文字以上</b>で設定してください。</p>
+      <button class="btn" onclick="changeHqPassword()">パスワードを変更</button>
+    </div>
+    <h2>店舗の新規作成</h2>
+    <div class="card">
+      <label>店舗コード</label>
+      <input id="hq-new-code" placeholder="例：1234" autocomplete="off">
+      <label>店名（任意）</label>
+      <input id="hq-new-name" placeholder="例：新宿店" autocomplete="off">
+      <label>初期パスワード</label>
+      <input id="hq-new-pw" type="password" placeholder="英数字8文字以上で入力" autocomplete="off">
+      <p class="hint" style="margin:4px 0 8px">※初期パスワードは、店舗に別途お伝えください。</p>
+      <button class="btn" onclick="hqAddStore()">＋ 店舗を作成</button>
+      <p class="hint">店舗側はここで作成されたコードとパスワードでログインします。店名を入力しない場合は店舗コードだけ各店に表示されます。都道府県、エリアは各店舗の管理画面でも設定できますが、設定したい場合は店舗を作成後に、店舗一覧から編集ボタンを押して編集してください。</p>
+    </div>
+    <h2>店舗一覧</h2>
+    <input id="hq-filter" placeholder="🔍 店名・コード・都道府県・エリアで絞り込み" autocomplete="off" oninput="renderHqStores()" style="margin-bottom:10px">
+    <div id="hq-store-list"></div>
+
+    <h2>監査ログ</h2>
+    <div class="card">
+      <p class="hint" style="margin-top:0">ログイン、店舗・従業員の作成や削除、パスワード変更などの重要操作を記録しています。</p>
+      <button class="btn sec" onclick="go('s-hq-audit')">監査ログを表示</button>
+    </div>
+  </section>
+
+  <!-- ============ 本部：監査ログ ============ -->
+  <section class="screen" id="s-hq-audit">
+    <div class="topbar">
+      <button class="link" onclick="go('s-hq')">← もどる</button>
+      <div class="who">📋 監査ログ</div>
+    </div>
+
+    <div class="card">
+      <label style="margin-top:0">操作種別</label>
+      <select id="audit-action-filter" onchange="renderAuditLogs()"></select>
+      <div class="row" style="gap:8px;margin-top:10px">
+        <div style="flex:1;min-width:0">
+          <label style="margin-top:0">開始日</label>
+          <input id="audit-from" type="date" onchange="renderAuditLogs()">
+        </div>
+        <div style="flex:1;min-width:0">
+          <label style="margin-top:0">終了日</label>
+          <input id="audit-to" type="date" onchange="renderAuditLogs()">
+        </div>
+      </div>
+      <input id="audit-search" placeholder="🔍 操作者コード・対象コードで絞り込み" autocomplete="off" oninput="renderAuditLogs()" style="margin-top:10px">
+      <div class="row" style="gap:8px;margin-top:10px;justify-content:flex-end">
+        <button class="btn sec sm" onclick="exportAuditCsv()">📥 CSVで出力</button>
+        <button class="btn danger sm" onclick="deleteOldAuditLogs()">🗑 1年以上前のログを削除</button>
+      </div>
+    </div>
+
+    <div id="audit-log-list"></div>
+  </section>
+
+  <!-- ============ 本部：店舗編集 ============ -->
+  <section class="screen" id="s-hq-edit">
+    <div class="topbar">
+      <button class="link" onclick="go('s-hq')">← もどる</button>
+      <div class="who">🏢 店舗を編集</div>
+    </div>
+    <h2 id="hq-edit-title"></h2>
+
+    <h3 style="margin-top:6px">店舗情報</h3>
+    <div class="card">
+      <label>店舗コード</label>
+      <input id="hq-edit-code" autocomplete="off">
+      <p class="hint" style="margin-top:4px">変更すると、依頼・応募先設定など全ての参照を自動で書き換えます。</p>
+      <label>店名</label>
+      <input id="hq-edit-name" autocomplete="off">
+      <label>都道府県</label>
+      <select id="hq-edit-pref"></select>
+      <label>エリア</label>
+      <input id="hq-edit-area" autocomplete="off">
+      <button class="btn" onclick="hqSaveStoreEdit()">店舗情報を保存</button>
+    </div>
+
+    <h3>従業員の管理</h3>
+    <div class="card">
+      <div id="hq-edit-emps"></div>
+      <div class="divider"></div>
+      <label>従業員コード</label>
+      <input id="hq-edit-new-emp-code" placeholder="例：123456" autocomplete="off">
+      <label>従業員名（任意）</label>
+      <input id="hq-edit-new-emp-name" placeholder="例：伊藤、黒田（清） など" autocomplete="off">
+      <p class="hint" style="margin:4px 0 8px">初期パスワードは <b>12345678</b> で発行されます。本人が初回ログイン後にパスワードを変更できます。</p>
+      <button class="btn" onclick="hqAddEmp()">＋ 従業員を追加</button>
+    </div>
+  </section>
+
+  <!-- ============ 店舗ログイン ============ -->
+  <section class="screen" id="s-store-login">
+    <div class="topbar"><button class="link" onclick="go('s-entry')">← もどる</button></div>
+    <h1>店舗ログイン</h1>
+    <p class="sub">本部が発行した店舗コードとパスワードでログインします。</p>
+    <div class="card">
+      <label>店舗コード</label>
+      <input id="store-code" placeholder="例：1234" autocomplete="off">
+      <label>パスワード</label>
+      <input id="store-pw" type="password" placeholder="パスワード" autocomplete="off">
+      <button class="btn" onclick="storeLogin()">ログイン</button>
+      <p class="hint" style="margin-top:14px;text-align:center">パスワードが不明な場合は本部にお問い合わせください。</p>
+    </div>
+  </section>
+
+  <!-- ============ 管理者モード ============ -->
+  <section class="screen" id="s-admin">
+    <div class="topbar">
+      <div class="who">🏪 店舗 <b id="admin-store"></b> 管理者モード</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="link" onclick="go('s-notif-settings')">通知</button>
+        <button class="link" onclick="logout()">ログアウト</button>
+      </div>
+    </div>
+
+    <h2>店舗情報</h2>
+    <div class="card">
+      <label>店名（任意）</label>
+      <input id="store-name" placeholder="例：渋谷店" autocomplete="off">
+      <label>都道府県</label>
+      <select id="store-pref"></select>
+      <label>エリア（任意・手入力）</label>
+      <input id="store-area" placeholder="例：首都圏、北海道北部エリア など" autocomplete="off">
+      <button class="btn" onclick="saveStoreInfo()">店舗情報を保存</button>
+      <p class="hint">店名は従業員の画面に表示されます（未記入なら店舗コードを表示）。都道府県とエリアは応募先の絞り込みに使えます。</p>
+    </div>
+
+    <h2>店舗パスワードの変更</h2>
+    <div class="card">
+      <label>現在のパスワード</label>
+      <input id="store-pw-cur" type="password" autocomplete="off">
+      <label>新しいパスワード</label>
+      <input id="store-pw-new" type="password" autocomplete="off">
+      <label>新しいパスワード（確認）</label>
+      <input id="store-pw-new2" type="password" autocomplete="off">
+      <button class="btn" onclick="changeStorePassword()">パスワードを変更</button>
+      <p class="hint">忘れた場合は本部にリセットを依頼してください。</p>
+    </div>
+
+    <h2>従業員の管理</h2>
+    <p class="hint" style="margin:-8px 0 12px">✕を押すと退職した従業員のデータが削除されログインできなくなります。</p>
+    <div class="card">
+      <div id="emp-list"></div>
+      <div class="divider"></div>
+      <label>従業員コード</label>
+      <input id="new-emp-code" placeholder="例：123456" autocomplete="off">
+      <label>従業員名（任意・管理画面のみ表示）</label>
+      <input id="new-emp-name" placeholder="例：伊藤、黒田（清） など" autocomplete="off">
+      <p class="hint" style="margin:4px 0 8px">初期パスワードは <b>12345678</b> で発行されます。本人が初回ログイン後にパスワードを変更できます。</p>
+      <button class="btn" onclick="addEmp()">＋ 従業員を追加</button>
+    </div>
+
+    <h2>店舗の距離区分（近隣／エリア内／応募可）</h2>
+    <div class="card">
+      <p class="hint" style="margin-top:0;margin-bottom:6px">他店舗を「近隣・エリア内・応募可」の3階層に分けます。区分した店舗とだけ、ヘルプのやりとりができます。</p>
+      <table class="rangetbl" style="margin-bottom:10px">
+        <thead>
+          <tr><th></th><th>区分する</th><th>区分しない</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>自店舗のヘルプ募集</td><td>届く</td><td>届かない</td></tr>
+          <tr><td>他店舗からの応援</td><td>来てもらえる</td><td>来られない</td></tr>
+        </tbody>
+      </table>
+      <table class="rangetbl">
+        <thead>
+          <tr><th>階層</th><th>選択例</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>近隣</td><td>交通費がかからない店舗</td></tr>
+          <tr><td>エリア内</td><td>電車やバス等で移動できる店舗</td></tr>
+          <tr><td>応募可</td><td>区内・市内・都内・県内などの最大範囲</td></tr>
+        </tbody>
+      </table>
+      <p class="hint" style="margin-top:6px">※「近隣」にすると「エリア内」「応募可」にも自動で入ります（近い区分は広い区分に含まれます）。自店舗は常にすべてに含まれます。</p>
+      <p class="hint" style="margin-top:8px"><b>代理権</b>＝チェックを入れると、この店舗のヘルプ依頼を他店舗のアカウントで代理処理（編集・キャンセルなど）できるようになります（他店舗に代理権を付与します）。</p>
+      <input id="target-filter" placeholder="🔍 店名・コード・都道府県・エリアで絞り込み" autocomplete="off" oninput="renderTargets()" style="margin-bottom:8px">
+      <div id="target-list"></div>
+    </div>
+
+    <h2>受けている代理権</h2>
+    <div class="card">
+      <p class="hint" style="margin-top:0">他の店舗から代理権を付与されているものの一覧です。意図しない代理権がある場合は「代理を解除」で外せます。</p>
+      <div id="proxy-received-list"></div>
+    </div>
+
+    <h2>自店従業員の応募許可範囲</h2>
+    <div class="card">
+      <p class="hint" style="margin-top:0;margin-bottom:10px">自店舗の従業員が、他店舗のヘルプ依頼に応募できる範囲を設定します。範囲を広げるほど、遠い店舗の依頼にも応募できます。上の「店舗の距離区分」で各店舗を区分しておく必要があります（区分されていない店舗の依頼には応募できません）。</p>
+      <table class="rangetbl">
+        <thead>
+          <tr><th>応募許可範囲</th><th>近隣<br>の店</th><th>エリア内<br>の店</th><th>応募可<br>の店</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>自店舗のみ</td><td>✕</td><td>✕</td><td>✕</td></tr>
+          <tr><td>近隣まで</td><td>○</td><td>✕</td><td>✕</td></tr>
+          <tr><td>エリア内まで</td><td>○</td><td>○</td><td>✕</td></tr>
+          <tr><td>応募できる店舗まで</td><td>○</td><td>○</td><td>○</td></tr>
+        </tbody>
+      </table>
+      <p class="hint" style="margin-top:8px">※「自店舗のみ」でも、自店舗のヘルプ依頼には常に応募できます。</p>
+      <label>応募許可範囲</label>
+      <select id="apply-scope-select" onchange="changeApplyScope()">
+        <option value="self">自店舗のみ</option>
+        <option value="nearby">近隣店舗まで（近隣）</option>
+        <option value="inArea">エリア内店舗まで（エリア内）</option>
+        <option value="all">応募できる店舗まで（応募可）</option>
+      </select>
+    </div>
+
+    <h2>店舗から依頼を出す</h2>
+    <div class="card">
+      <p class="hint" style="margin-top:0">最初から人員が足りないとき、店舗で追加募集や時間を指定したいとき、誤って依頼を消したときなど、店舗から直接ヘルプ募集をかけることができます。</p>
+      <label>開始日</label>
+      <input id="sreq-date" type="date">
+      <div class="timegrid">
+        <div><label>開始時刻</label><select id="sreq-start"></select></div>
+        <div><label>終了時刻</label><select id="sreq-end"></select></div>
+      </div>
+      <label>終了日</label>
+      <input id="sreq-date-end" type="date">
+      <label>メモ（任意）</label>
+      <input id="sreq-memo" placeholder="例：誰でも、ワンオペ経験者のみ など" autocomplete="off">
+      <label>最低応募時間</label>
+      <select id="sreq-min-apply"></select>
+      <p class="hint" style="margin-top:4px">短時間の応募を制限できます（交通費に見合わない応募を防げます）。「全時間希望者のみ」を選ぶと、募集枠すべてに入れる方だけが応募できます。</p>
+      <button class="btn" onclick="storeSubmitRequest()">この内容で募集する</button>
+    </div>
+
+    <h2>ヘルプ依頼の管理</h2>
+    <p class="hint" style="margin:-8px 0 12px">自店舗の従業員・店舗が出した依頼に加え、自店舗が代理権を持つ他店舗の依頼も表示します。ヘルプに応募した従業員の勤務時間、所属店舗（店舗コード）、従業員コード、名前が表示されます。</p>
+    <div id="admin-outgoing"></div>
+
+    <h2>自店舗から応援に行く予定</h2>
+    <p class="hint" style="margin:-8px 0 12px">自店舗の従業員が他店舗の依頼に応募して、応援に行く予定の一覧です。</p>
+    <div id="admin-incoming"></div>
+  </section>
+
+  <!-- ============ 従業員ログイン ============ -->
+  <section class="screen" id="s-emp-login">
+    <div class="topbar"><button class="link" onclick="go('s-entry')">← もどる</button></div>
+    <h1>従業員ログイン</h1>
+    <p class="sub">従業員コードとパスワードでログイン。<br>パスワードは店舗の管理者が設定したものです。</p>
+    <div class="card">
+      <label>従業員コード</label>
+      <input id="emp-code" placeholder="例：123456" autocomplete="off">
+      <label>パスワード</label>
+      <input id="emp-pw" type="password" placeholder="パスワード" autocomplete="off">
+      <button class="btn" onclick="empLogin()">ログイン</button>
+      <p class="hint">パスワードがわからない場合、ログインができない場合は店舗管理者にご相談ください。</p>
+    </div>
+  </section>
+
+  <!-- ============ 従業員メニュー ============ -->
+  <section class="screen" id="s-emp-menu">
+    <div class="topbar">
+      <div class="who">🙋 従業員 <b id="emp-who"></b>（<span id="emp-store"></span>）</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="link" onclick="go('s-notif-settings')">通知</button>
+        <button class="link" onclick="logout()">ログアウト</button>
+      </div>
+    </div>
+    <h1>なにをしますか？</h1>
+    <p class="sub">お休みしたいときは依頼ボタン、ヘルプに入りたいときは応募ボタンを押してください。</p>
+    <div class="tabwrap">
+      <div class="tabbtn" onclick="go('s-request')">
+        <div class="ic">📤</div>
+        <div class="t">ヘルプ依頼</div>
+        <div class="d">ヘルプを募集する</div>
+      </div>
+      <div class="tabbtn" onclick="openApply()" style="position:relative">
+        <div class="ic">📥</div>
+        <div class="t">ヘルプ応募</div>
+        <div class="d">ヘルプに入る</div>
+        <span class="notif" id="apply-badge" style="display:none">0</span>
+      </div>
+    </div>
+    <div style="margin-top:12px;text-align:center">
+      <button class="link" onclick="go('s-emp-pw')">パスワードの変更</button>
+    </div>
+  </section>
+
+  <!-- ============ 従業員パスワード変更 ============ -->
+  <section class="screen" id="s-emp-pw">
+    <div class="topbar"><button class="link" onclick="go('s-emp-menu')">← もどる</button></div>
+    <h1>パスワードの変更</h1>
+    <div class="card">
+      <label>現在のパスワード</label>
+      <input id="emp-pw-cur" type="password" autocomplete="off">
+      <label>新しいパスワード</label>
+      <input id="emp-pw-new1" type="password" autocomplete="off">
+      <label>新しいパスワード（確認）</label>
+      <input id="emp-pw-new2" type="password" autocomplete="off">
+      <p class="hint" style="margin-top:6px">新しいパスワードは <b>8文字以上</b> で設定してください。パスワードを忘れた場合は店舗管理者にご相談ください。</p>
+      <button class="btn" onclick="changeEmpOwnPassword()">パスワードを変更</button>
+    </div>
+  </section>
+
+  <!-- ============ 強制PW変更（初回ログイン・PWリセット後） ============ -->
+  <section class="screen" id="s-force-pw">
+    <div class="topbar">
+      <div class="who">🔐 パスワードを変更してください</div>
+    </div>
+    <div class="card" style="background:#fff7ed;border-color:#fed7aa">
+      <p style="margin:0 0 8px;color:#b45309;font-weight:700">⚠️ 初期パスワードのままではご利用いただけません</p>
+      <p class="hint" style="margin-top:0">セキュリティのため、ご自身で新しいパスワードを設定してください。設定が完了するまで他の画面はご利用いただけません。</p>
+    </div>
+    <div class="card">
+      <label>現在のパスワード</label>
+      <input id="force-pw-cur" type="password" autocomplete="off" placeholder="初期パスワード">
+      <label>新しいパスワード</label>
+      <input id="force-pw-new1" type="password" autocomplete="off">
+      <label>新しいパスワード（確認）</label>
+      <input id="force-pw-new2" type="password" autocomplete="off">
+      <p class="hint" style="margin-top:6px">新しいパスワードは <b>8文字以上</b>、現在のパスワードと異なるものを設定してください。</p>
+      <button class="btn" onclick="forcePwChange()">パスワードを変更して続行</button>
+      <button class="btn sec" onclick="forcePwLogout()" style="margin-top:8px">中止してログアウト</button>
+    </div>
+  </section>
+
+  <!-- ============ ヘルプ依頼 ============ -->
+  <section class="screen" id="s-request">
+    <div class="topbar"><button class="link" onclick="go('s-emp-menu')">← もどる</button></div>
+    <h1>ヘルプ依頼</h1>
+    <p class="sub">ヘルプを依頼したい日時を選んでください。</p>
+    <div class="card">
+      <label>開始日</label>
+      <input id="req-date" type="date">
+      <div class="timegrid">
+        <div>
+          <label>開始時刻</label>
+          <select id="req-start"></select>
+        </div>
+        <div>
+          <label>終了時刻</label>
+          <select id="req-end"></select>
+        </div>
+      </div>
+      <label>終了日</label>
+      <input id="req-date-end" type="date">
+      <p class="hint" style="margin-top:8px">深夜勤務などで日付をまたぐ場合は、終了日を翌日にしてください。<br>（例：2026/06/01 23:00 〜 2026/06/02 05:00が勤務予定の場合、開始日を2026/06/01、終了日を2026/06/02にして、開始時刻を23:00、終了時刻を05:00にしてください）<br>※1回のヘルプ依頼は24時間以内にしてください。</p>
+      <label>メモ（任意）</label>
+      <input id="req-memo" placeholder="例：誰でも、ワンオペ経験者のみ など" autocomplete="off">
+      <button class="btn" onclick="submitRequest()">この内容で募集する</button>
+    </div>
+
+    <div class="sectitle">自分が出している依頼</div>
+    <div id="my-requests"></div>
+  </section>
+
+  <!-- ============ ヘルプ応募 ============ -->
+  <section class="screen" id="s-apply">
+    <div class="topbar"><button class="link" onclick="go('s-emp-menu')">← もどる</button></div>
+    <h1>ヘルプ応募</h1>
+    <div class="sectitle" style="margin-top:6px">あなたが応援に行く予定</div>
+    <div id="my-accepted"></div>
+    <div class="sectitle">応募できる依頼</div>
+    <div class="subhead">🏪 自店舗の依頼</div>
+    <div id="apply-list-own"></div>
+    <div class="subhead">🤝 他店舗の依頼</div>
+    <div id="apply-list-other"></div>
+  </section>
+
+</div>
+
+<!-- モーダル -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h3 id="m-title"></h3>
+    <p id="m-body"></p>
+    <div class="row">
+      <button class="btn sec" onclick="closeModal()">いいえ</button>
+      <button class="btn ok" id="m-yes">はい</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="apply-overlay">
+  <div class="modal" style="text-align:left">
+    <h3 style="text-align:center">入れる時間を選ぶ</h3>
+    <p style="font-size:13px;color:var(--sub);text-align:center;margin:0 0 10px" id="apply-store"></p>
+    <div class="item-line" id="apply-holes-info" style="color:var(--brand);margin:0 0 14px"></div>
+    <div class="timegrid">
+      <div><label>開始</label><select id="apply-start"></select></div>
+      <div><label>終了</label><select id="apply-end"></select></div>
+    </div>
+    <p class="hint" id="apply-note" style="margin-top:8px"></p>
+    <div class="row" style="margin-top:16px;gap:10px">
+      <button class="btn sec" onclick="closeApplyModal()">やめる</button>
+      <button class="btn ok" id="apply-confirm">この時間で応募</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="edit-overlay">
+  <div class="modal" style="text-align:left">
+    <h3 style="text-align:center">依頼を編集</h3>
+    <label>開始日</label>
+    <input id="edit-date" type="date">
+    <div class="timegrid">
+      <div><label>開始時刻</label><select id="edit-start"></select></div>
+      <div><label>終了時刻</label><select id="edit-end"></select></div>
+    </div>
+    <label>終了日</label>
+    <input id="edit-date-end" type="date">
+    <label>メモ（任意）</label>
+    <input id="edit-memo" placeholder="例：ホール経験必須、キッチン業務できる方 など" autocomplete="off">
+    <label>最低応募時間</label>
+    <select id="edit-min-apply"></select>
+    <div class="row" style="margin-top:18px;gap:10px">
+      <button class="btn sec" onclick="closeEditModal()">やめる</button>
+      <button class="btn ok" id="edit-save">保存</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="emp-edit-overlay">
+  <div class="modal" style="text-align:left">
+    <h3 style="text-align:center">従業員情報の編集</h3>
+    <p style="font-size:13px;color:var(--sub);text-align:center;margin:0 0 14px">対象：<span id="emp-edit-target"></span></p>
+    <label>従業員コード</label>
+    <input id="emp-edit-code" autocomplete="off">
+    <p class="hint" style="margin-top:4px">コードを変えると、依頼や応募の参照も自動で更新されます。本人にも新コードをお伝えください。</p>
+    <label>従業員名</label>
+    <input id="emp-edit-name" autocomplete="off">
+    <div class="row" style="margin-top:16px;gap:10px">
+      <button class="btn sec" onclick="closeEmpEditModal()">やめる</button>
+      <button class="btn ok" id="emp-edit-save">保存</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="swap-overlay">
+  <div class="modal" style="text-align:left">
+    <h3 style="text-align:center">勤務先を変更</h3>
+    <p id="swap-target" style="font-size:13px;color:var(--sub);text-align:center;margin:0 0 14px"></p>
+    <label>変更先の店舗</label>
+    <select id="swap-store-select"></select>
+    <p class="hint" style="margin-top:6px">変更後、応募者と変更前後の店舗管理者に通知されます。</p>
+    <div class="row" style="margin-top:16px;gap:10px">
+      <button class="btn sec" onclick="closeSwapModal()">やめる</button>
+      <button class="btn ok" id="swap-save">保存</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   Supabase 接続（認証ベース版）
+========================================================= */
+const SUPABASE_URL='YOUR_SUPABASE_URL';            // e.g. https://xxxx.supabase.co
+const SUPABASE_ANON_KEY='YOUR_SUPABASE_ANON_KEY';  // Project Settings > API > anon public
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// 仮想メール変換（Supabase Authは メール+PW なのでコードを仮想メールに変換）
+const HQ_EMAIL='hq@shift.local';
+function storeEmail(code){ return code.toUpperCase()+'@store.shift.local'; }
+function empEmail(code){ return code+'@emp.shift.local'; }
+
+// Supabase Auth ログイン/ログアウト
+async function authSignIn(email, pw){
+  const {data,error}=await sb.auth.signInWithPassword({email, password:pw});
+  return {ok:!error, error, data};
+}
+async function authSignOut(){ try{ await sb.auth.signOut(); }catch(e){} }
+
+// Edge Functions呼び出しヘルパー（認証JWTを自動付与）
+async function callEdge(fnName, body){
+  const {data,error} = await sb.functions.invoke(fnName, { body });
+  if(error){
+    let msg = error.message || String(error);
+    try{
+      const ctx = error.context && await error.context.json();
+      if(ctx && ctx.error) msg = ctx.error;
+    }catch(_){}
+    return { ok:false, error: msg };
+  }
+  return { ok:true, data };
+}
+
+// Edge Functionsのエラー文字列をユーザー向けメッセージに変換
+function friendlyError(err, fallback){
+  if(!err) return fallback || '処理に失敗しました';
+  console.error('[edge error raw]', err);
+  const s = String(err).toLowerCase();
+  // 既知のパターンを変換
+  if(s.includes('already exists') || s.includes('already registered') || s.includes('duplicate')) return 'そのコードまたはパスワードは既に使われています';
+  if(s.includes('forbidden')) return '権限がありません';
+  if(s.includes('unauthorized')) return 'ログインが必要です';
+  if(s.includes('not found')) return '対象が見つかりません';
+  if(s.includes('password') && s.includes('short')) return 'パスワードが短すぎます';
+  if(s.includes('weak password') || s.includes('password should')) return 'パスワードが要件を満たしていません';
+  if(s.includes('invalid')) return '入力内容が正しくありません';
+  if(s.includes('network') || s.includes('failed to fetch')) return 'ネットワークに接続できません';
+  if(s.includes('timeout')) return '処理がタイムアウトしました';
+  // 不明なエラーは汎用メッセージ
+  return fallback || '処理に失敗しました（しばらく時間を置いてお試しください）';
+}
+
+// ============ プッシュ通知 ============
+const VAPID_PUBLIC_KEY='YOUR_VAPID_PUBLIC_KEY';    // npx web-push generate-vapid-keys
+
+// HTMLエスケープ（XSS対策）
+function esc(s){
+  if(s==null) return '';
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
+// 監査ログを書き込む（失敗してもアプリ動作は止めない）
+async function auditLog(action, opts){
+  try{
+    const o=opts||{};
+    let actorRole=null, actorCode=null;
+    if(session){
+      if(session.type==='hq'){ actorRole='hq'; actorCode='Admin'; }
+      else if(session.type==='store'){ actorRole='store'; actorCode=session.code; }
+      else if(session.type==='emp'){ actorRole='emp'; actorCode=session.code; }
+    }
+    // ログイン失敗など、未認証時の操作も記録できるよう、actor未指定時はopts経由でもOK
+    if(o.actorRole) actorRole=o.actorRole;
+    if(o.actorCode) actorCode=o.actorCode;
+    await sb.from('audit_logs').insert({
+      actor_role: actorRole,
+      actor_code: actorCode,
+      action: action,
+      target_type: o.targetType||null,
+      target_code: o.targetCode||null,
+      detail: o.detail||null,
+      ua: navigator.userAgent.substring(0,255)
+    });
+  }catch(e){
+    console.error('audit log failed:', e);
+  }
+}
+
+// パスワード強度チェック（本部用）：英大小、数字、記号を含む8文字以上
+const STRONG_PW_SYMBOLS = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~￥！”＃＄％＆’（）＊＋，－．／：；＜＝＞？＠［￥］＾＿‘｛｜｝￣';
+function validateStrongPw(pw){
+  if(!pw||pw.length<8) return 'パスワードは8文字以上にしてください';
+  if(!/[A-Z]/.test(pw)) return '大文字のアルファベットを1文字以上含めてください';
+  if(!/[a-z]/.test(pw)) return '小文字のアルファベットを1文字以上含めてください';
+  if(!/[0-9]/.test(pw)) return '数字を1文字以上含めてください';
+  // 記号判定：英数字以外で1文字でもあればOK
+  if(!/[^A-Za-z0-9]/.test(pw)) return '記号を1文字以上含めてください';
+  return null; // OK
+}
+
+function urlBase64ToUint8Array(base64String){
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
+  return outputArray;
+}
+
+// 現在の購読状態を取得
+async function getPushSubscription(){
+  if(!('serviceWorker' in navigator) || !('PushManager' in window)) return null;
+  try{
+    const reg = await navigator.serviceWorker.ready;
+    return await reg.pushManager.getSubscription();
+  }catch(e){ return null; }
+}
+
+// 通知を購読する
+async function subscribePush(){
+  if(!('serviceWorker' in navigator) || !('PushManager' in window)){
+    toast('このブラウザは通知に対応していません'); return false;
+  }
+  const permission = await Notification.requestPermission();
+  if(permission!=='granted'){
+    toast('通知が許可されませんでした'); return false;
+  }
+  try{
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+    });
+    const subJson = sub.toJSON();
+    // ロール・コード判定
+    let role='', code='';
+    if(session.type==='hq'){ role='hq'; code='Admin'; }
+    else if(session.type==='store'){ role='store'; code=session.code; }
+    else if(session.type==='emp'){ role='emp'; code=session.code; }
+    // テーブルに保存
+    const {data:{user}} = await sb.auth.getUser();
+    if(!user) return false;
+    const {error} = await sb.from('push_subscriptions').upsert({
+      auth_id: user.id,
+      endpoint: subJson.endpoint,
+      p256dh: subJson.keys.p256dh,
+      auth: subJson.keys.auth,
+      user_role: role,
+      user_code: code,
+    }, { onConflict:'auth_id,endpoint' });
+    if(error){ toast('購読保存失敗：'+friendlyError(error.message,'通知の購読に失敗しました')); return false; }
+    return true;
+  }catch(e){
+    toast('通知購読に失敗：'+e.message);
+    return false;
+  }
+}
+
+// 通知購読を解除
+async function unsubscribePush(){
+  const sub = await getPushSubscription();
+  if(sub){
+    const endpoint = sub.endpoint;
+    await sub.unsubscribe();
+    await sb.from('push_subscriptions').delete().eq('endpoint', endpoint);
+  }
+}
+
+// 依頼に応じた通知ターゲット計算
+function notifyTargetsForRequest(r){
+  // 募集対象となる従業員：依頼元店舗のscope設定に該当する店舗の全従業員
+  const scope = r.scope || 'nearby';
+  const storeS = DB.stores[r.store];
+  if(!storeS) return [];
+  const targetStores = scope==='nearby' ? (storeS.nearby||[])
+                     : scope==='inArea' ? (storeS.inArea||[])
+                     : (storeS.targets||[]);
+  const empCodes = Object.entries(DB.employees)
+    .filter(([code,e])=>targetStores.includes(e.store) && code!==r.by)
+    .map(([code])=>code);
+  const result = [];
+  if(empCodes.length) result.push({ role:'emp', codes: empCodes });
+  // 代理権を持つ店舗にも「自店舗扱いの依頼が来た」として通知（依頼元店舗自身は除外）
+  const proxies = (storeS.proxy||[]).filter(c=>c!==r.store);
+  if(proxies.length) result.push({ role:'store', codes: proxies });
+  return result;
+}
+
+// プッシュ通知送信（失敗してもアプリ動作は止めない）
+async function pushNotify(targets, title, body){
+  if(!targets || targets.length===0) return;
+  try{
+    await callEdge('send-notification', { targets, title, body, url:'/' });
+  }catch(e){ console.error('Push failed:', e); }
+}
+
+// 指定店舗とその代理権を持つ店舗の両方をtargetsとして返す
+function storeAndProxies(storeCode){
+  const result = [{role:'store', code:storeCode}];
+  const s = DB.stores[storeCode];
+  if(s && Array.isArray(s.proxy)){
+    s.proxy.forEach(c=>{
+      if(c!==storeCode) result.push({role:'store', code:c});
+    });
+  }
+  return result;
+}
+
+// 通知設定画面：状態表示・トグル
+async function showNotifSettings(){
+  const statusEl = document.getElementById('notif-status');
+  const btnEl = document.getElementById('notif-toggle');
+  if(!('serviceWorker' in navigator) || !('PushManager' in window)){
+    statusEl.textContent = '⚠️ このブラウザは通知に対応していません';
+    btnEl.style.display = 'none';
+    return;
+  }
+  const sub = await getPushSubscription();
+  if(sub){
+    statusEl.innerHTML = '✅ 通知は<b>有効</b>になっています';
+    btnEl.textContent = '通知を無効にする';
+    btnEl.className = 'btn danger';
+  }else{
+    if(Notification.permission==='denied'){
+      statusEl.innerHTML = '🚫 通知が<b>ブロック</b>されています。ブラウザの設定から通知を許可してください。';
+      btnEl.style.display = 'none';
+    }else{
+      statusEl.innerHTML = '⚪ 通知は<b>無効</b>です';
+      btnEl.textContent = '通知を有効にする';
+      btnEl.className = 'btn ok';
+      btnEl.style.display = '';
+    }
+  }
+}
+async function toggleNotif(){
+  const sub = await getPushSubscription();
+  if(sub){
+    await unsubscribePush();
+    toast('通知を無効にしました');
+  }else{
+    const ok = await subscribePush();
+    if(ok) toast('通知を有効にしました');
+  }
+  showNotifSettings();
+}
+function goBackFromNotif(){
+  if(!session) return go('s-entry');
+  if(session.type==='hq') go('s-hq');
+  else if(session.type==='store') go('s-admin');
+  else go('s-emp-menu');
+}
+
+// 自分のパスワードを更新
+async function authUpdatePassword(newPw){
+  const {error}=await sb.auth.updateUser({password:newPw});
+  return {ok:!error, error};
+}
+
+/* =========================================================
+   データ層（メモリ上のキャッシュ、真実の置き場はSupabase）
+========================================================= */
+const DB = {
+  stores: {},
+  employees: {},
+  requests: [],
+  hq: null
+};
+
+// === レコード変換ヘルパー（DB行 ⇄ アプリ内オブジェクト） ===
+// 注意：新スキーマではPWはauth.usersで管理。テーブルにはpw列が無いのでアプリ側でも持たない
+function rowToStore(r){
+  return {name:r.name||'', pref:r.pref||'', area:r.area||'',
+          targets:r.targets||[], inArea:r.in_area||[], nearby:r.nearby||[],
+          proxy:r.proxy||[],
+          applyScope: r.apply_scope || 'nearby',
+          defaultMinApply: (r.default_min_apply==null ? 0 : r.default_min_apply),
+          defaultMinApplyEmp: (r.default_min_apply_emp==null ? 0 : r.default_min_apply_emp),
+          pwChanged: r.pw_changed===true,
+          auth_id:r.auth_id||null};
+}
+function storeToRow(code, s){
+  return {code, name:s.name||'', pref:s.pref||'', area:s.area||'',
+          targets:s.targets||[], in_area:s.inArea||[], nearby:s.nearby||[],
+          proxy:s.proxy||[],
+          apply_scope: s.applyScope || 'nearby',
+          default_min_apply: (s.defaultMinApply==null ? 0 : s.defaultMinApply),
+          default_min_apply_emp: (s.defaultMinApplyEmp==null ? 0 : s.defaultMinApplyEmp),
+          pw_changed: !!s.pwChanged,
+          auth_id:s.auth_id||null};
+}
+function rowToEmployee(r){
+  return {store:r.store, name:r.name||'',
+          pwChanged: r.pw_changed===true,
+          auth_id:r.auth_id||null};
+}
+function employeeToRow(code, e){
+  return {code, store:e.store, name:e.name||'',
+          pw_changed: !!e.pwChanged,
+          auth_id:e.auth_id||null};
+}
+function rowToRequest(r){
+  return {id:Number(r.id), store:r.store, by:r.by_emp, byStore:r.by_store||false,
+          date:r.date_start, dateEnd:r.date_end, start:r.start_time, end:r.end_time,
+          memo:r.memo||'', scope:r.scope||'nearby', fills:r.fills||[],
+          minApplyMinutes:r.min_apply_minutes||0,
+          editedByStore:r.edited_by_store||false, editedFrom:r.edited_from||null, editedSeen:r.edited_seen||false,
+          cancelledByStore:r.cancelled_by_store||false, cancelledSeen:r.cancelled_seen||false};
+}
+function requestToRow(r){
+  return {id:r.id, store:r.store, by_emp:r.by||null, by_store:!!r.byStore,
+          date_start:r.date, date_end:r.dateEnd, start_time:r.start, end_time:r.end,
+          memo:r.memo||'', scope:r.scope||'nearby', fills:r.fills||[],
+          min_apply_minutes:r.minApplyMinutes||0,
+          edited_by_store:!!r.editedByStore, edited_from:r.editedFrom||null, edited_seen:!!r.editedSeen,
+          cancelled_by_store:!!r.cancelledByStore, cancelled_seen:!!r.cancelledSeen};
+}
+
+// === 保存・削除ヘルパー（呼ぶだけでSupabaseに反映） ===
+async function saveStore(code){
+  if(!DB.stores[code]) return;
+  const row = storeToRow(code, DB.stores[code]);
+  // 行は Edge Function 経由で作成済み前提なので update のみ
+  // （RLSで店舗ロールは insert 不可。本部経由のときは update でも OK）
+  const {code:_omit, ...patch} = row;
+  await sb.from('stores').update(patch).eq('code', code);
+}
+async function deleteStoreDB(code){
+  await sb.from('stores').delete().eq('code', code);
+}
+async function saveEmployee(code){
+  if(!DB.employees[code]) return;
+  const row = employeeToRow(code, DB.employees[code]);
+  const {code:_omit, ...patch} = row;
+  await sb.from('employees').update(patch).eq('code', code);
+}
+async function deleteEmployeeDB(code){
+  await sb.from('employees').delete().eq('code', code);
+}
+async function saveRequest(r, opts){
+  if(!r) return;
+  const isNew = opts && opts.isNew;
+  if(isNew){
+    // 新規作成（insertポリシーで判定）
+    await sb.from('requests').insert(requestToRow(r));
+  }else{
+    // 更新（fillsの追加・編集・キャンセルなど）
+    const row = requestToRow(r);
+    const {id:_omit, ...patch} = row;
+    await sb.from('requests').update(patch).eq('id', r.id);
+  }
+}
+async function deleteRequestDB(id){
+  await sb.from('requests').delete().eq('id', id);
+}
+async function saveHq(){
+  if(!DB.hq) return;
+  await sb.from('hq').upsert({id:1, code:DB.hq.code, recovery:DB.hq.recovery, auth_id:DB.hq.auth_id||null});
+}
+
+// === 初回ロード：Supabaseから全データ取得 ===
+async function loadAll(){
+  // 依頼は「終了日（date_end）≥ 昨日」のもののみ取得
+  // 過去の終了済み依頼は読み込まない（パフォーマンス・メモリ削減）
+  const yesterday = new Date(Date.now() - 86400*1000);
+  const yStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth()+1).padStart(2,'0')}-${String(yesterday.getDate()).padStart(2,'0')}`;
+  const [s,e,r,h]=await Promise.all([
+    sb.from('stores').select('*'),
+    sb.from('employees').select('*'),
+    sb.from('requests').select('*').gte('date_end', yStr),
+    sb.from('hq').select('*').eq('id',1).maybeSingle()
+  ]);
+  DB.stores={}; (s.data||[]).forEach(row=>{ DB.stores[row.code]=rowToStore(row); });
+  DB.employees={}; (e.data||[]).forEach(row=>{ DB.employees[row.code]=rowToEmployee(row); });
+  DB.requests=(r.data||[]).map(rowToRequest);
+  DB.hq=h.data?{code:h.data.code, recovery:h.data.recovery, auth_id:h.data.auth_id}:{code:'Admin',recovery:''};
+}
+
+// === Realtime購読（他端末の変更を取り込み画面更新） ===
+function setupRealtime(){
+  sb.channel('app-sync')
+    .on('postgres_changes',{event:'*',schema:'public',table:'stores'}, payload=>{
+      if(payload.eventType==='DELETE'){ delete DB.stores[payload.old.code]; }
+      else{ DB.stores[payload.new.code]=rowToStore(payload.new); }
+      rerenderCurrent();
+    })
+    .on('postgres_changes',{event:'*',schema:'public',table:'employees'}, payload=>{
+      if(payload.eventType==='DELETE'){ delete DB.employees[payload.old.code]; }
+      else{ DB.employees[payload.new.code]=rowToEmployee(payload.new); }
+      rerenderCurrent();
+    })
+    .on('postgres_changes',{event:'*',schema:'public',table:'requests'}, payload=>{
+      if(payload.eventType==='DELETE'){
+        DB.requests=DB.requests.filter(x=>x.id!==Number(payload.old.id));
+      }else{
+        const nr=rowToRequest(payload.new);
+        const i=DB.requests.findIndex(x=>x.id===nr.id);
+        if(i>=0) DB.requests[i]=nr; else DB.requests.push(nr);
+      }
+      rerenderCurrent();
+    })
+    .subscribe();
+}
+// 現在表示中の画面を再描画
+function rerenderCurrent(){
+  const active=document.querySelector('.screen.active');
+  if(!active||!session) return;
+  if(active.id==='s-admin' && session.type==='store') renderAdmin();
+  if(active.id==='s-hq' && session.type==='hq') renderHqStores();
+  if(active.id==='s-hq-edit' && session.type==='hq'){ renderHqEditEmps(); }
+  if(active.id==='s-request' && session.type==='emp') renderMyRequests();
+  if(active.id==='s-apply' && session.type==='emp') renderApplyList();
+  if(active.id==='s-emp-menu' && session.type==='emp') updateApplyBadge();
+}
+
+/* =========================================================
+   起動：認証は各ログイン関数で行う。起動時はテーブルアクセスしない
+   （未認証だとRLSで弾かれるため）
+========================================================= */
+// Service Worker 登録（PWA・プッシュ通知用）
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(err=>console.error('SW register failed:', err));
+}
+
+(async ()=>{
+  try{
+    setupRealtime();
+  }catch(err){
+    console.error('Realtime setup failed:', err);
+  }
+})();
+
+/* =========================================================
+   旧データ層（廃止：互換のため残置）
+========================================================= */
+function _seed_placeholder(){}
+
+// 店舗の表示名（店名があれば「店名（コード）」、なければコード）
+function storeLabel(code){
+  const s=DB.stores[code];
+  if(!s) return esc(code);
+  return s.name ? `${esc(s.name)}（${esc(code)}）` : esc(code);
+}
+// 都道府県・エリアの補足（あれば「／東京都・首都圏」のように）
+function storePlace(code){
+  const s=DB.stores[code]; if(!s) return '';
+  const parts=[s.pref,s.area].filter(Boolean);
+  return parts.length ? ` ・${esc(parts.join(' '))}` : '';
+}
+// 従業員ラベル（管理画面用・従業員名があれば添える）
+function empLabel(code){
+  const e=DB.employees[code];
+  return (e&&e.name) ? `${esc(code)}（${esc(e.name)}）` : esc(code);
+}
+// 依頼者ラベル（店舗発なら「店舗」、従業員発なら従業員ラベル）
+function requesterLabel(r){ return r.byStore ? '店舗' : empLabel(r.by); }
+// メモ表示（あれば1行）
+function memoLine(r){
+  return r.memo ? `<div class="memo-line">📝 ${esc(r.memo)}</div>` : '';
+}
+function escapeHtml(s){ return esc(s); }
+// 都道府県リスト
+const PREFS=["北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県","茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県","新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県","静岡県","愛知県","三重県","滋賀県","京都府","大阪府","兵庫県","奈良県","和歌山県","鳥取県","島根県","岡山県","広島県","山口県","徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎県","熊本県","大分県","宮崎県","鹿児島県","沖縄県"];
+
+let session = null; // {type:'store'|'emp', code}
+
+/* ============ 画面遷移 ============ */
+function go(id){
+  // 強制PW変更ガード：未変更の店舗・従業員は強制画面に戻す
+  if(session){
+    let mustChange = false;
+    if(session.type==='store' && DB.stores[session.code] && !DB.stores[session.code].pwChanged) mustChange = true;
+    if(session.type==='emp' && DB.employees[session.code] && !DB.employees[session.code].pwChanged) mustChange = true;
+    if(mustChange && id!=='s-force-pw' && id!=='s-entry' && id!=='s-store-login' && id!=='s-emp-login'){
+      id = 's-force-pw';
+    }
+  }
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='s-emp-menu' && session && session.type==='emp') updateApplyBadge();
+  if(id==='s-notif-settings') showNotifSettings();
+  if(id==='s-hq-audit'){
+    document.getElementById('audit-action-filter').dataset.built='';
+    // 初期値：開始日=過去30日、終了日=今日
+    const fromEl = document.getElementById('audit-from');
+    const toEl = document.getElementById('audit-to');
+    if(!fromEl.value){
+      const from = new Date(Date.now()-30*86400*1000);
+      fromEl.value = `${from.getFullYear()}-${String(from.getMonth()+1).padStart(2,'0')}-${String(from.getDate()).padStart(2,'0')}`;
+    }
+    if(!toEl.value){
+      const to = new Date();
+      toEl.value = `${to.getFullYear()}-${String(to.getMonth()+1).padStart(2,'0')}-${String(to.getDate()).padStart(2,'0')}`;
+    }
+    renderAuditLogs();
+  }
+  if(id==='s-request' && session && session.type==='emp') renderMyRequests();
+  if(id==='s-apply' && session && session.type==='emp') renderApplyList();
+  if(id==='s-admin' && session && session.type==='store') renderAdmin();
+  if(id==='s-hq' && session && session.type==='hq') renderHqStores();
+}
+async function logout(){ session=null; clearIdleTimer(); await authSignOut(); DB.stores={}; DB.employees={}; DB.requests=[]; go('s-entry'); }
+
+// 操作なし10分で自動ログアウト
+const IDLE_LIMIT_MS = 10*60*1000;
+let idleTimer=null;
+function resetIdleTimer(){
+  if(idleTimer) clearTimeout(idleTimer);
+  if(!session) return;
+  idleTimer=setTimeout(()=>{
+    if(session){ toast('一定時間操作がなかったためログアウトしました'); logout(); }
+  }, IDLE_LIMIT_MS);
+}
+function clearIdleTimer(){ if(idleTimer){ clearTimeout(idleTimer); idleTimer=null; } }
+['click','keydown','touchstart','input','change'].forEach(ev=>{
+  document.addEventListener(ev, ()=>{ if(session) resetIdleTimer(); }, true);
+});
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),1900);
+}
+
+/* ============ モーダル ============ */
+function confirmModal(title, body, onYes){
+  document.getElementById('m-title').textContent=title;
+  document.getElementById('m-body').textContent=body;
+  const yes=document.getElementById('m-yes');
+  yes.onclick=()=>{ closeModal(); onYes(); };
+  document.getElementById('overlay').classList.add('show');
+}
+function closeModal(){ document.getElementById('overlay').classList.remove('show'); }
+
+/* ============ 時刻セレクト生成（30分刻み） ============ */
+function timeOptions(){
+  let opts='';
+  for(let h=0;h<24;h++){for(let m=0;m<60;m+=30){
+    const t=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+    opts+=`<option value="${t}">${t}</option>`;
+  }}
+  return opts;
+}
+function fillTimes(){
+  const opts=timeOptions();
+  const s=document.getElementById('req-start'), e=document.getElementById('req-end');
+  s.innerHTML=opts; e.innerHTML=opts;
+  s.value="09:00"; e.value="17:00";
+  const es=document.getElementById('edit-start'), ee=document.getElementById('edit-end');
+  es.innerHTML=opts; ee.innerHTML=opts;
+  const ss=document.getElementById('sreq-start'), se=document.getElementById('sreq-end');
+  ss.innerHTML=opts; se.innerHTML=opts;
+  ss.value="09:00"; se.value="17:00";
+}
+fillTimes();
+// 今日の日付を初期値に
+// 今日の日付（ローカル基準のYYYY-MM-DD）
+function todayLocal(){
+  const d=new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+document.getElementById('req-date').value=todayLocal();
+document.getElementById('req-date-end').value=todayLocal();
+document.getElementById('sreq-date').value=todayLocal();
+document.getElementById('sreq-date-end').value=todayLocal();
+
+/* ============ 店舗ログイン ============ */
+async function storeLogin(){
+  const code=document.getElementById('store-code').value.trim().toUpperCase();
+  const pw=document.getElementById('store-pw').value;
+  if(!code||!pw){ toast('店舗コードとパスワードを入力してください'); return; }
+  const {ok}=await authSignIn(storeEmail(code), pw);
+  if(!ok){
+    auditLog('login_failed', {actorRole:'store', actorCode:code, detail:{reason:'auth_failed'}});
+    toast('店舗コードまたはパスワードが違います'); return;
+  }
+  await loadAll();
+  if(!DB.stores[code]){ toast('その店舗コードは登録されていません'); await authSignOut(); return; }
+  session={type:'store', code};
+  resetIdleTimer();
+  document.getElementById('store-code').value='';
+  document.getElementById('store-pw').value='';
+  auditLog('login_success');
+  // 初期PWのままなら強制変更画面へ
+  if(!DB.stores[code].pwChanged){
+    go('s-force-pw');
+    return;
+  }
+  renderAdmin();
+  go('s-admin');
+}
+
+/* ============ 本部 ============ */
+async function changeHqPassword(){
+  const cur=document.getElementById('hq-pw-cur').value;
+  const n1=document.getElementById('hq-pw-new').value;
+  const n2=document.getElementById('hq-pw-new2').value;
+  if(!cur||!n1||!n2){ toast('すべての欄を入力してください'); return; }
+  if(n1!==n2){ toast('新しいパスワード（確認）が一致しません'); return; }
+  if(n1===cur){ toast('現在と同じパスワードです'); return; }
+  const strongErr=validateStrongPw(n1);
+  if(strongErr){ toast(strongErr); return; }
+  // 現在のPW確認のため再認証
+  const {ok}=await authSignIn(HQ_EMAIL, cur);
+  if(!ok){ toast('現在のパスワードが違います'); return; }
+  // パスワード更新
+  const {error}=await sb.auth.updateUser({password:n1});
+  if(error){ toast('PW変更失敗：'+friendlyError(error.message,'パスワード変更に失敗しました')); return; }
+  document.getElementById('hq-pw-cur').value='';
+  document.getElementById('hq-pw-new').value='';
+  document.getElementById('hq-pw-new2').value='';
+  auditLog('hq_pw_change', {targetType:'auth', targetCode:'Admin'});
+  toast('本部パスワードを変更しました');
+}
+
+async function hqRecover(){
+  const c=document.getElementById('hq-rec-code').value.trim().toUpperCase();
+  const n1=document.getElementById('hq-rec-new').value;
+  const n2=document.getElementById('hq-rec-new2').value;
+  if(!c||!n1||!n2){ toast('すべての欄を入力してください'); return; }
+  if(n1!==n2){ toast('新しいパスワード（確認）が一致しません'); return; }
+  const strongErr=validateStrongPw(n1);
+  if(strongErr){ toast(strongErr); return; }
+  const {ok,data,error}=await callEdge('hq-recover',{recoveryCode:c, newPassword:n1});
+  if(!ok){
+    if(error && error.includes('invalid recovery')) toast('復旧コードが違います');
+    else toast('再設定に失敗：'+friendlyError(error,'再設定に失敗しました'));
+    return;
+  }
+  document.getElementById('hq-rec-code').value='';
+  document.getElementById('hq-rec-new').value='';
+  document.getElementById('hq-rec-new2').value='';
+  // 隠しコードか正規コードかは区別して記録
+  // 隠しコードの判定はサーバー側(HQ_HIDDEN_CODE)で行う
+  const isHidden = false;
+  auditLog('hq_recover', {targetType:'auth', targetCode:'Admin', actorRole:'hq', actorCode:'Admin', detail:{method: isHidden?'hidden_code':'recovery_code'}});
+  const msg = data && data.newRecovery
+    ? `新しい復旧コードは「${data.newRecovery}」です。安全な場所に保管してください。`
+    : 'パスワードを再設定しました。';
+  confirmModal('再設定が完了しました', msg, ()=>{ go('s-hq-login'); });
+}
+async function hqLogin(){
+  const code=document.getElementById('hq-code').value.trim();
+  const pw=document.getElementById('hq-pw').value;
+  if(!code||!pw){ toast('すべての欄を入力してください'); return; }
+  if(code.toLowerCase()!=='admin'){
+    auditLog('login_failed', {actorRole:'hq', actorCode:code||'unknown', detail:{reason:'wrong_code'}});
+    toast('本部コードまたはパスワードが違います'); return;
+  }
+  const {ok,error}=await authSignIn(HQ_EMAIL, pw);
+  if(!ok){
+    auditLog('login_failed', {actorRole:'hq', actorCode:'Admin', detail:{reason:'wrong_password'}});
+    toast('本部コードまたはパスワードが違います'); return;
+  }
+  await loadAll();
+  session={type:'hq'};
+  resetIdleTimer();
+  document.getElementById('hq-code').value='';
+  document.getElementById('hq-pw').value='';
+  renderHqStores();
+  auditLog('login_success');
+  go('s-hq');
+}
+async function hqAddStore(){
+  const code=document.getElementById('hq-new-code').value.trim().toUpperCase();
+  const name=document.getElementById('hq-new-name').value.trim();
+  const pw=document.getElementById('hq-new-pw').value.trim();
+  if(!code||!pw){ toast('店舗コードとパスワードを入力してください'); return; }
+  if(DB.stores[code]){ toast('その店舗コードは既に存在します'); return; }
+  const {ok,error}=await callEdge('create-store',{code, name, pw});
+  if(!ok){ toast('店舗作成に失敗：'+friendlyError(error,'店舗作成に失敗しました')); return; }
+  // ローカル反映（Realtimeでも来るが即時表示のため）
+  DB.stores[code]={pw, targets:[code], nearby:[code], inArea:[code], proxy:[], name, pref:"", area:"", pwChanged:false, defaultMinApply:60, defaultMinApplyEmp:0};
+  document.getElementById('hq-new-code').value='';
+  document.getElementById('hq-new-name').value='';
+  document.getElementById('hq-new-pw').value='';
+  renderHqStores();
+  auditLog('store_create', {targetType:'store', targetCode:code, detail:{name}});
+  toast('店舗を作成しました');
+}
+// =========================
+// 監査ログ
+// =========================
+const AUDIT_ACTION_LABELS = {
+  login_success: 'ログイン成功',
+  login_failed: 'ログイン失敗',
+  hq_pw_change: '本部PW変更',
+  hq_recover: '本部PW復旧',
+  store_create: '店舗作成',
+  store_delete: '店舗削除',
+  store_code_change: '店舗コード変更',
+  store_pw_change: '店舗PW変更',
+  store_pw_reset: '店舗PWリセット',
+  employee_create: '従業員作成',
+  employee_delete: '従業員削除',
+  employee_update: '従業員情報変更',
+  employee_pw_reset: '従業員PWリセット',
+  emp_pw_change: '従業員PW変更',
+  proxy_grant: '代理権付与',
+  proxy_remove: '代理権削除（付与側）',
+  proxy_revoke: '代理権解除（受手側）',
+  work_store_change: '勤務先変更',
+  apply_scope_change: '応募許可範囲変更',
+  audit_log_purge: '監査ログ削除',
+  auto_cleanup_requests: '古い依頼の自動削除',
+};
+function actionLabel(a){ return AUDIT_ACTION_LABELS[a] || a; }
+
+let auditCache = [];
+async function loadAuditLogs(){
+  const fromEl = document.getElementById('audit-from');
+  const toEl = document.getElementById('audit-to');
+  let q = sb.from('audit_logs').select('*').order('occurred_at', {ascending:false}).limit(5000);
+  if(fromEl && fromEl.value){
+    const since = new Date(fromEl.value + 'T00:00:00').toISOString();
+    q = q.gte('occurred_at', since);
+  }
+  if(toEl && toEl.value){
+    // 終了日は当日23:59:59まで含める
+    const until = new Date(toEl.value + 'T23:59:59.999').toISOString();
+    q = q.lte('occurred_at', until);
+  }
+  const {data, error} = await q;
+  if(error){ toast('ログ取得失敗：'+friendlyError(error.message,'ログの取得に失敗しました')); auditCache=[]; return; }
+  auditCache = data || [];
+  // 操作種別フィルタのオプションを構築（初回のみ）
+  const actionSel = document.getElementById('audit-action-filter');
+  if(actionSel && !actionSel.dataset.built){
+    const uniqueActions = Array.from(new Set(auditCache.map(l=>l.action)));
+    actionSel.innerHTML = '<option value="">すべて</option>' +
+      uniqueActions.map(a=>`<option value="${esc(a)}">${esc(actionLabel(a))}</option>`).join('');
+    actionSel.dataset.built = '1';
+  }
+}
+
+async function renderAuditLogs(){
+  await loadAuditLogs();
+  const el = document.getElementById('audit-log-list');
+  if(!el) return;
+  const actionFilter = document.getElementById('audit-action-filter')?.value || '';
+  const searchTerm = (document.getElementById('audit-search')?.value || '').trim().toLowerCase();
+  let list = auditCache;
+  if(actionFilter) list = list.filter(l => l.action === actionFilter);
+  if(searchTerm){
+    list = list.filter(l =>
+      (l.actor_code||'').toLowerCase().includes(searchTerm) ||
+      (l.target_code||'').toLowerCase().includes(searchTerm)
+    );
+  }
+  if(list.length === 0){
+    el.innerHTML = '<div class="empty"><span class="ic">📋</span>該当するログはありません</div>';
+    return;
+  }
+  el.innerHTML = list.slice(0, 200).map(l => {
+    const dt = new Date(l.occurred_at);
+    const dtStr = `${dt.getFullYear()}/${String(dt.getMonth()+1).padStart(2,'0')}/${String(dt.getDate()).padStart(2,'0')} ${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}`;
+    const actor = l.actor_role ? `${l.actor_role}/${l.actor_code||'-'}` : '(未認証)';
+    const target = l.target_code ? `${l.target_type||''}: ${l.target_code}` : '';
+    const detail = l.detail ? JSON.stringify(l.detail) : '';
+    return `<div class="item" style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+        <div>
+          <div style="font-weight:700">${esc(actionLabel(l.action))}</div>
+          <div style="font-size:12px;color:var(--sub)">操作者：${esc(actor)}${target?' ／ '+esc(target):''}</div>
+          ${detail?`<div style="font-size:11px;color:var(--sub);margin-top:4px;word-break:break-all">${esc(detail)}</div>`:''}
+        </div>
+        <div style="font-size:12px;color:var(--sub);white-space:nowrap">${esc(dtStr)}</div>
+      </div>
+    </div>`;
+  }).join('') + (list.length > 200 ? `<p class="hint" style="text-align:center">先頭 200 件を表示しています（全 ${list.length} 件）。CSV出力で全件取得できます。</p>` : '');
+}
+
+function exportAuditCsv(){
+  if(!auditCache || auditCache.length === 0){ toast('出力するログがありません'); return; }
+  const rows = [['occurred_at','actor_role','actor_code','action','action_label','target_type','target_code','detail','ua']];
+  for(const l of auditCache){
+    rows.push([
+      l.occurred_at||'',
+      l.actor_role||'',
+      l.actor_code||'',
+      l.action||'',
+      actionLabel(l.action||''),
+      l.target_type||'',
+      l.target_code||'',
+      l.detail ? JSON.stringify(l.detail) : '',
+      l.ua||''
+    ]);
+  }
+  const csv = rows.map(r=>r.map(v=>{
+    const s = String(v).replace(/"/g,'""');
+    return /[",\n]/.test(s) ? `"${s}"` : s;
+  }).join(',')).join('\r\n');
+  // UTF-8 BOM をつけて Excel で文字化けしないように
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const dt = new Date();
+  a.href = url;
+  a.download = `audit_log_${dt.getFullYear()}${String(dt.getMonth()+1).padStart(2,'0')}${String(dt.getDate()).padStart(2,'0')}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('CSVをダウンロードしました');
+}
+
+function deleteOldAuditLogs(){
+  confirmModal('古いログの削除', '1年以上前の監査ログを削除します。CSVで保管されていることを確認してから実行してください。よろしいですか？', async ()=>{
+    const since = new Date(Date.now() - 365*86400*1000).toISOString();
+    const {error, count} = await sb.from('audit_logs').delete({count:'exact'}).lt('occurred_at', since);
+    if(error){ toast('削除失敗：'+friendlyError(error.message,'削除に失敗しました')); return; }
+    auditLog('audit_log_purge', {detail:{before: since, deleted: count}});
+    toast(`${count||0}件のログを削除しました`);
+    document.getElementById('audit-action-filter').dataset.built='';
+    renderAuditLogs();
+  });
+}
+
+function renderHqStores(){
+  document.getElementById('hq-recovery-view').textContent=DB.hq.recovery;
+  const el=document.getElementById('hq-store-list');
+  const q=(document.getElementById('hq-filter').value||'').trim().toLowerCase();
+  const codes=Object.keys(DB.stores).filter(c=>{
+    if(!q) return true;
+    const s=DB.stores[c];
+    return `${c} ${s.name||''} ${s.pref||''} ${s.area||''}`.toLowerCase().includes(q);
+  });
+  if(codes.length===0){
+    el.innerHTML='<div class="empty"><span class="ic">🏪</span>店舗がありません</div>';
+    return;
+  }
+  el.innerHTML=codes.map(c=>{
+    const s=DB.stores[c];
+    const empCount=Object.values(DB.employees).filter(e=>e.store===c).length;
+    return `<div class="item">
+      <div class="top">
+        <div>
+          <div class="date">${s.name?esc(s.name):esc(c)}</div>
+          <div class="meta">コード ${esc(c)}${storePlace(c)} ／ 従業員 ${empCount}名</div>
+        </div>
+        <button class="xbtn" onclick="hqDeleteStore('${esc(c)}')">✕</button>
+      </div>
+      <div class="row" style="margin-top:10px;gap:8px;justify-content:flex-end">
+        <button class="btn sec sm" onclick="hqEditStore('${esc(c)}')">編集</button>
+        <button class="btn sec sm" onclick="hqResetStorePassword('${esc(c)}')">PWリセット</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+let hqEditingCode=null;
+function hqEditStore(code){
+  const s=DB.stores[code]; if(!s) return;
+  hqEditingCode=code;
+  document.getElementById('hq-edit-title').textContent=`${s.name?s.name:code}（${code}）`;
+  document.getElementById('hq-edit-code').value=code;
+  document.getElementById('hq-edit-name').value=s.name||'';
+  const prefSel=document.getElementById('hq-edit-pref');
+  prefSel.innerHTML='<option value="">（未選択）</option>'+PREFS.map(p=>`<option value="${p}">${p}</option>`).join('');
+  prefSel.value=s.pref||'';
+  document.getElementById('hq-edit-area').value=s.area||'';
+  renderHqEditEmps();
+  go('s-hq-edit');
+}
+function renderHqEditEmps(){
+  const el=document.getElementById('hq-edit-emps');
+  const emps=Object.entries(DB.employees).filter(([,v])=>v.store===hqEditingCode);
+  if(emps.length===0){
+    el.innerHTML='<div class="empty" style="padding:18px">まだ従業員がいません</div>';
+    return;
+  }
+  el.innerHTML=emps.map(([code,v])=>`
+    <div class="listrow">
+      <div>
+        <div class="code">${esc(code)}${v.name?`　${esc(v.name)}`:''}</div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+        <button class="btn sec sm" onclick="editEmp('${esc(code)}')">編集</button>
+        <button class="btn sec sm" onclick="resetEmpPassword('${esc(code)}')">PWリセット</button>
+        <button class="xbtn" onclick="hqDelEmp('${esc(code)}')">✕</button>
+      </div>
+    </div>`).join('');
+}
+async function hqSaveStoreEdit(){
+  if(!hqEditingCode||!DB.stores[hqEditingCode]){ go('s-hq'); return; }
+  const oldCode=hqEditingCode;
+  const newCode=document.getElementById('hq-edit-code').value.trim().toUpperCase();
+  const name=document.getElementById('hq-edit-name').value.trim();
+  const pref=document.getElementById('hq-edit-pref').value;
+  const area=document.getElementById('hq-edit-area').value.trim();
+  if(!newCode){ toast('店舗コードを入力してください'); return; }
+  // コード変更ありの場合は確認ダイアログ
+  if(newCode!==oldCode){
+    if(DB.stores[newCode]){ toast('そのコードは既に使われています'); return; }
+    confirmModal('店舗コードを変更',`「${oldCode}」を「${newCode}」に変更します。依頼や応募先設定の参照もすべて更新されます。よろしいですか？`,async ()=>{
+      const {ok,error,data}=await callEdge('update-store',{oldCode, newCode, newName:name, newPref:pref, newArea:area});
+      if(!ok){ toast('更新失敗：'+friendlyError(error,'更新に失敗しました')); return; }
+      // ローカル反映
+      const moved=DB.stores[oldCode];
+      moved.name=name; moved.pref=pref; moved.area=area;
+      moved.targets=(moved.targets||[]).map(c=>c===oldCode?newCode:c);
+      moved.nearby=(moved.nearby||[]).map(c=>c===oldCode?newCode:c);
+      moved.inArea=(moved.inArea||[]).map(c=>c===oldCode?newCode:c);
+      DB.stores[newCode]=moved;
+      delete DB.stores[oldCode];
+      Object.values(DB.stores).forEach(st=>{
+        st.targets=(st.targets||[]).map(c=>c===oldCode?newCode:c);
+        st.nearby=(st.nearby||[]).map(c=>c===oldCode?newCode:c);
+        st.inArea=(st.inArea||[]).map(c=>c===oldCode?newCode:c);
+      });
+      Object.values(DB.employees).forEach(e=>{ if(e.store===oldCode) e.store=newCode; });
+      DB.requests.forEach(r=>{ if(r.store===oldCode) r.store=newCode; });
+      hqEditingCode=newCode;
+      document.getElementById('hq-edit-title').textContent=`${name?name:newCode}（${newCode}）`;
+      renderHqStores();
+      auditLog('store_code_change', {targetType:'store', targetCode:newCode, detail:{oldCode, newCode, name}});
+      toast('店舗コードと情報を更新しました');
+    });
+    return;
+  }
+  // コードはそのまま、他項目だけ更新
+  const {ok,error}=await callEdge('update-store',{oldCode, newName:name, newPref:pref, newArea:area});
+  if(!ok){ toast('更新失敗：'+friendlyError(error,'更新に失敗しました')); return; }
+  const s=DB.stores[oldCode];
+  s.name=name; s.pref=pref; s.area=area;
+  document.getElementById('hq-edit-title').textContent=`${name?name:oldCode}（${oldCode}）`;
+  renderHqStores();
+  toast('店舗情報を更新しました');
+}
+async function hqAddEmp(){
+  const code=document.getElementById('hq-edit-new-emp-code').value.trim();
+  const name=document.getElementById('hq-edit-new-emp-name').value.trim();
+  if(!code){ toast('従業員コードを入力'); return; }
+  if(DB.employees[code]){ toast('そのコードは既に使われています'); return; }
+  const pw='12345678';
+  const {ok,error}=await callEdge('create-employee',{code, name, pw, store:hqEditingCode});
+  if(!ok){ toast('追加失敗：'+friendlyError(error,'追加に失敗しました')); return; }
+  DB.employees[code]={store:hqEditingCode, name, pwChanged:false};
+  document.getElementById('hq-edit-new-emp-code').value='';
+  document.getElementById('hq-edit-new-emp-name').value='';
+  renderHqEditEmps();
+  renderHqStores();
+  auditLog('employee_create', {targetType:'employee', targetCode:code, detail:{store:hqEditingCode, name}});
+  toast('従業員を追加しました（初期PW: 12345678）');
+}
+function hqDelEmp(code){
+  confirmModal('従業員を削除',`コード ${code} を削除します。この従業員が出した依頼も消えます。よろしいですか？`,async ()=>{
+    const {ok,error}=await callEdge('delete-user',{targetType:'employee', targetCode:code});
+    if(!ok){ toast('削除失敗：'+friendlyError(error,'削除に失敗しました')); return; }
+    delete DB.employees[code];
+    DB.requests=DB.requests.filter(r=>r.by!==code);
+    DB.requests.forEach(r=>{ if(r.fills) r.fills=r.fills.filter(f=>f.by!==code); });
+    renderHqEditEmps();
+    renderHqStores();
+    auditLog('employee_delete', {targetType:'employee', targetCode:code});
+    toast('削除しました');
+  });
+}
+function hqResetStorePassword(code){
+  const s=DB.stores[code];
+  if(!s) return;
+  const label=s.name?`${s.name}（${code}）`:code;
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let newPw=''; for(let i=0;i<8;i++) newPw+=chars[Math.floor(Math.random()*chars.length)];
+  confirmModal('パスワードをリセット',`${label} のパスワードを再発行します。新しいパスワードは「${newPw}」です。店舗にお伝えください。よろしいですか？`,async ()=>{
+    const {ok,error}=await callEdge('admin-update-password',{targetType:'store', targetCode:code, newPassword:newPw});
+    if(!ok){ toast('PWリセット失敗：'+friendlyError(error,'パスワードリセットに失敗しました')); return; }
+    if(DB.stores[code]) DB.stores[code].pwChanged = false;
+    renderHqStores();
+    auditLog('store_pw_reset', {targetType:'store', targetCode:code});
+    toast(`新パスワード：${newPw}`);
+  });
+}
+function hqDeleteStore(code){
+  const s=DB.stores[code];
+  const label=s.name?`${s.name}（${code}）`:code;
+  confirmModal('店舗を削除',`${label} を削除します。この店舗の従業員・依頼・他店からの応募先設定もすべて消えます。よろしいですか？`,async ()=>{
+    const {ok,error}=await callEdge('delete-user',{targetType:'store', targetCode:code});
+    if(!ok){ toast('削除失敗：'+friendlyError(error,'削除に失敗しました')); return; }
+    // ローカル反映
+    Object.keys(DB.employees).forEach(ec=>{ if(DB.employees[ec].store===code) delete DB.employees[ec]; });
+    DB.requests=DB.requests.filter(r=>{
+      if(r.store===code) return false;
+      if(!r.byStore && !DB.employees[r.by]) return false;
+      return true;
+    });
+    DB.requests.forEach(r=>{ if(r.fills) r.fills=r.fills.filter(f=>DB.employees[f.by]); });
+    Object.values(DB.stores).forEach(st=>{
+      st.targets=(st.targets||[]).filter(t=>t!==code);
+      st.inArea=(st.inArea||[]).filter(t=>t!==code);
+      st.nearby=(st.nearby||[]).filter(t=>t!==code);
+      st.proxy=(st.proxy||[]).filter(t=>t!==code);
+    });
+    delete DB.stores[code];
+    // 他店舗のtargets/nearby/inAreaから当該店舗の参照を消す（DB側でも）
+    for(const c of Object.keys(DB.stores)) await saveStore(c);
+    renderHqStores();
+    auditLog('store_delete', {targetType:'store', targetCode:code});
+    toast('店舗を削除しました');
+  });
+}
+
+/* ============ 管理者モード描画 ============ */
+function renderAdmin(){
+  const store=session.code;
+  document.getElementById('admin-store').textContent=storeLabel(store);
+
+  // 店舗情報フォームに現在値を反映
+  const s=DB.stores[store];
+  document.getElementById('store-name').value=s.name||'';
+  const prefSel=document.getElementById('store-pref');
+  prefSel.innerHTML='<option value="">（未選択）</option>'+PREFS.map(p=>`<option value="${p}">${p}</option>`).join('');
+  prefSel.value=s.pref||'';
+  document.getElementById('store-area').value=s.area||'';
+
+  // 応募許可範囲を反映
+  const scopeSel=document.getElementById('apply-scope-select');
+  if(scopeSel) scopeSel.value = s.applyScope || 'nearby';
+
+  // 店舗発依頼フォームのセレクト（初期値は1時間固定）
+  const sreqSel = document.getElementById('sreq-min-apply');
+  if(sreqSel) sreqSel.innerHTML = minApplyOptions(60);
+
+  // 従業員リスト
+  const el=document.getElementById('emp-list');
+  const emps=Object.entries(DB.employees).filter(([,v])=>v.store===store);
+  if(emps.length===0){
+    el.innerHTML='<div class="empty" style="padding:20px"><span class="ic">👥</span>まだ従業員がいません</div>';
+  }else{
+    el.innerHTML=emps.map(([code,v])=>`
+      <div class="listrow">
+        <div>
+          <div class="code">${esc(code)}${v.name?`　${esc(v.name)}`:''}</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+          <button class="btn sec sm" onclick="editEmp('${esc(code)}')">編集</button>
+          <button class="btn sec sm" onclick="resetEmpPassword('${esc(code)}')">PWリセット</button>
+          <button class="xbtn" onclick="delEmp('${esc(code)}')">✕</button>
+        </div>
+      </div>`).join('');
+  }
+
+  // 応募先店舗
+  renderTargets();
+  renderProxyReceived();
+
+  renderAdminOutgoing(store);
+  renderAdminIncoming(store);
+}
+
+// 受けている代理権の一覧
+function renderProxyReceived(){
+  const me = session.code;
+  const el = document.getElementById('proxy-received-list');
+  if(!el) return;
+  // 自店舗が proxy 配列に入っている他店舗を集める
+  const grantors = Object.entries(DB.stores)
+    .filter(([c,s])=>c!==me && (s.proxy||[]).includes(me))
+    .map(([c,s])=>({code:c, store:s}));
+  if(grantors.length===0){
+    el.innerHTML='<div class="empty" style="padding:14px">現在、他店舗から付与されている代理権はありません</div>';
+    return;
+  }
+  el.innerHTML=grantors.map(({code,store})=>{
+    const place=storePlace(code);
+    return `<div class="listrow">
+      <div>
+        <div class="code">${store.name?esc(store.name):esc(code)}</div>
+        <div style="font-size:11.5px;color:var(--sub)">${store.name?esc(code):''}${place}</div>
+      </div>
+      <button class="btn danger sm" onclick="revokeProxy('${esc(code)}')">代理を解除</button>
+    </div>`;
+  }).join('');
+}
+// 自店従業員の応募許可範囲を変更
+async function changeApplyScope(){
+  const me = session.code;
+  const s = DB.stores[me];
+  if(!s) return;
+  const sel = document.getElementById('apply-scope-select');
+  const newScope = sel.value;
+  const oldScope = s.applyScope || 'nearby';
+  if(newScope === oldScope) return;
+  s.applyScope = newScope;
+  await saveStore(me);
+  auditLog('apply_scope_change', {targetType:'store', targetCode:me, detail:{oldScope, newScope}});
+  toast('応募許可範囲を変更しました');
+}
+
+// 応募者側の許可範囲チェック
+// targetStoreCode: 応募先の店舗、myStoreCode: 応募者の所属店舗、scope: 'self'|'nearby'|'inArea'|'all'
+function isApplyAllowed(targetStoreCode, myStoreCode, scope){
+  // 自店舗内の依頼は常に応募可
+  if(targetStoreCode === myStoreCode) return true;
+  if(scope === 'self') return false;
+  const me = DB.stores[myStoreCode];
+  if(!me) return false;
+  const list = scope==='nearby' ? (me.nearby||[])
+             : scope==='inArea' ? (me.inArea||[])
+             : (me.targets||[]); // 'all'
+  return list.includes(targetStoreCode);
+}
+
+function revokeProxy(grantorCode){
+  const g = DB.stores[grantorCode];
+  const label = g && g.name ? `${g.name}（${grantorCode}）` : grantorCode;
+  confirmModal('代理を解除', `${label} から付与されている代理権を解除します。よろしいですか？`, async ()=>{
+    const {ok,error} = await callEdge('revoke-proxy', { grantorCode });
+    if(!ok){ toast('解除失敗：'+friendlyError(error,'解除に失敗しました')); return; }
+    // ローカル反映
+    const s = DB.stores[grantorCode];
+    if(s && s.proxy){ s.proxy = s.proxy.filter(c=>c!==session.code); }
+    renderProxyReceived();
+    renderAdminOutgoing(session.code);
+    auditLog('proxy_revoke', {targetType:'store', targetCode:grantorCode, detail:{revoker:session.code}});
+    toast('代理を解除しました');
+  });
+}
+
+// 勤務先変更モーダル
+let swapTarget=null; // {reqId, fillIdx}
+function openSwapModal(reqId, fillIdx){
+  const r=DB.requests.find(x=>x.id===reqId);
+  if(!r||!r.fills||!r.fills[fillIdx]) return;
+  swapTarget={reqId, fillIdx};
+  const f=r.fills[fillIdx];
+  const currentStore = f.store || r.store;
+  document.getElementById('swap-target').textContent=
+    `${empLabel(f.by)} ／ ${fmtMinSpan(...reqRange(f))} ／ 現在の勤務先：${storeLabel(currentStore)}`;
+  // 候補：自店舗＋自店舗が代理権を持つ店舗（自店舗が proxy 配列に含まれている付与元）
+  const myCode = session.code;
+  const candidates = new Set([myCode]);
+  Object.entries(DB.stores).forEach(([c,s])=>{
+    if((s.proxy||[]).includes(myCode)) candidates.add(c);
+  });
+  // 元の依頼元店舗も入れておく（戻したいケース）
+  candidates.add(r.store);
+  const sel=document.getElementById('swap-store-select');
+  sel.innerHTML=Array.from(candidates).map(c=>{
+    const s=DB.stores[c];
+    const label=s?.name?`${esc(s.name)}（${esc(c)}）`:esc(c);
+    return `<option value="${esc(c)}" ${c===currentStore?'selected':''}>${label}</option>`;
+  }).join('');
+  document.getElementById('swap-overlay').classList.add('show');
+}
+function closeSwapModal(){
+  document.getElementById('swap-overlay').classList.remove('show');
+  swapTarget=null;
+}
+document.getElementById('swap-save').onclick=async function(){
+  if(!swapTarget) return closeSwapModal();
+  const r=DB.requests.find(x=>x.id===swapTarget.reqId);
+  if(!r||!r.fills||!r.fills[swapTarget.fillIdx]){ closeSwapModal(); return; }
+  const f=r.fills[swapTarget.fillIdx];
+  const newStore=document.getElementById('swap-store-select').value;
+  const oldStore = f.store || r.store;
+  if(newStore===oldStore){ closeSwapModal(); return; }
+  // 変更
+  f.store = newStore;
+  await saveRequest(r);
+  // 通知：応募者本人＋変更前後の店舗管理者＋依頼元店舗の代理＋変更前後の代理＋応募者の所属店舗
+  const empCode = f.by;
+  const notifTargets = [{role:'emp', code:empCode}];
+  // 重複は send-notification 側でendpoint単位で排除されるので雑に追加してOK
+  notifTargets.push(...storeAndProxies(oldStore));
+  notifTargets.push(...storeAndProxies(newStore));
+  notifTargets.push(...storeAndProxies(r.store));
+  // 応募者の所属店舗にも通知
+  const empObj = DB.employees[empCode];
+  if(empObj && empObj.store){
+    notifTargets.push(...storeAndProxies(empObj.store));
+  }
+  pushNotify(
+    notifTargets,
+    '🔄 勤務先が変更されました',
+    `${empLabel(empCode)} ／ ${fmtMinSpan(...reqRange(f))}：${storeLabel(oldStore)} → ${storeLabel(newStore)}`
+  );
+  auditLog('work_store_change', {targetType:'employee', targetCode:empCode, detail:{requestId:r.id, oldStore, newStore}});
+  closeSwapModal();
+  renderAdmin();
+  toast('勤務先を変更しました');
+};
+
+// 応募できる店舗の選択リスト（絞り込み・店名表示対応）
+function renderTargets(){
+  const store=session.code;
+  const tl=document.getElementById('target-list');
+  const q=(document.getElementById('target-filter').value||'').trim().toLowerCase();
+  const others=Object.keys(DB.stores).filter(c=>{
+    if(c===store) return true;
+    if(!q) return true;
+    const s=DB.stores[c];
+    const hay=`${c} ${s.name||''} ${s.pref||''} ${s.area||''}`.toLowerCase();
+    return hay.includes(q);
+  });
+  if(others.length===0){
+    tl.innerHTML='<div class="empty" style="padding:18px">該当する店舗がありません</div>';
+    return;
+  }
+  const me=DB.stores[store];
+  const head=`<div class="tcheck-head">
+    <div class="tcheck-name"></div>
+    <div class="tcheck-col">近隣</div>
+    <div class="tcheck-col">エリア内</div>
+    <div class="tcheck-col">応募可</div>
+    <div class="tcheck-col" title="自店舗の依頼を他店が代理処理できる">代理権</div>
+  </div>`;
+  tl.innerHTML=head+others.map(c=>{
+    const s=DB.stores[c];
+    const self=c===store;
+    const place=storePlace(c);
+    const inN=self||me.nearby?.includes(c);
+    const inA=self||me.inArea?.includes(c);
+    const inT=self||me.targets?.includes(c);
+    const inP=me.proxy?.includes(c);
+    const dis=self?'disabled':'';
+    return `<div class="tcheck-row">
+      <div class="tcheck-name">
+        <div class="nm">${s.name?esc(s.name):esc(c)}${self?' （自店舗）':''}</div>
+        <div style="font-size:11.5px;color:var(--sub)">${s.name?esc(c):''}${place}</div>
+      </div>
+      <div class="tcheck-col"><input type="checkbox" ${inN?'checked':''} ${dis} onchange="toggleScope('${esc(c)}','nearby',this.checked)"></div>
+      <div class="tcheck-col"><input type="checkbox" ${inA?'checked':''} ${dis} onchange="toggleScope('${esc(c)}','inArea',this.checked)"></div>
+      <div class="tcheck-col"><input type="checkbox" ${inT?'checked':''} ${dis} onchange="toggleScope('${esc(c)}','targets',this.checked)"></div>
+      <div class="tcheck-col"><input type="checkbox" ${inP?'checked':''} ${dis} onchange="toggleScope('${esc(c)}','proxy',this.checked)"></div>
+    </div>`;
+  }).join('');
+}
+// 包含関係を保ちながらチェック反映：近隣⊆エリア内⊆応募可。proxyは独立。
+function toggleScope(code, level, on){
+  const me=DB.stores[session.code];
+  const add=(arr)=>{ if(!arr.includes(code)) arr.push(code); };
+  const rem=(arr)=>{ const i=arr.indexOf(code); if(i>=0) arr.splice(i,1); };
+  me.nearby=me.nearby||[]; me.inArea=me.inArea||[]; me.targets=me.targets||[]; me.proxy=me.proxy||[];
+  if(on){
+    if(level==='nearby'){ add(me.nearby); add(me.inArea); add(me.targets); }
+    if(level==='inArea'){ add(me.inArea); add(me.targets); }
+    if(level==='targets'){ add(me.targets); }
+    if(level==='proxy'){
+      add(me.proxy);
+      // 代理権限を付与した店舗に通知
+      pushNotify([{role:'store', code}], '🔑 代理権限が付与されました',
+        `${storeLabel(session.code)} から代理権限が付与されました。`);
+      auditLog('proxy_grant', {targetType:'store', targetCode:code, detail:{granter:session.code}});
+    }
+  }else{
+    if(level==='targets'){ rem(me.targets); rem(me.inArea); rem(me.nearby); }
+    if(level==='inArea'){ rem(me.inArea); rem(me.nearby); }
+    if(level==='nearby'){ rem(me.nearby); }
+    if(level==='proxy'){
+      rem(me.proxy);
+      auditLog('proxy_remove', {targetType:'store', targetCode:code, detail:{granter:session.code}});
+    }
+  }
+  renderTargets();
+  saveStore(session.code);
+}
+
+// 管理者：依頼の募集範囲を変更
+function setRequestScope(id, scope){
+  const r=DB.requests.find(x=>x.id===id);
+  if(!r) return;
+  r.scope=scope;
+  saveRequest(r);
+  toast(`募集範囲を「${scopeLabel(scope)}」に変更しました`);
+}
+// 管理者：未対応の依頼をキャンセル
+function adminCancelRequest(id){
+  const r=DB.requests.find(x=>x.id===id);
+  if(!r) return;
+  if(isFullyFilled(r)){ toast('すべて充足しているためキャンセルできません'); renderAdmin(); return; }
+  const fills=(r.fills||[]).slice();
+  if(fills.length===0){
+    confirmModal('依頼をキャンセル',`${fmtSpan(r)} の依頼を取り消します。よろしいですか？`,()=>{
+      r.cancelledByStore=true;
+      r.cancelledSeen=false;
+      saveRequest(r);
+      // 依頼者へキャンセル通知（応募者ゼロ前提）
+      if(!r.byStore && r.by){
+        pushNotify([{role:'emp', code:r.by}], '❌ 依頼がキャンセルされました',
+          `${storeLabel(r.store)} ／ ${spanTime(r)}`);
+      }
+      renderAdmin(); toast('依頼をキャンセルしました');
+    });
+    return;
+  }
+  // 一部充足 → 未応募部分のみ取り消し、依頼者に通知
+  const holes=freeRanges(r);
+  const holeText=holes.map(h=>fmtMinSpan(h[0],h[1])).join('、');
+  confirmModal('未応募部分をキャンセル',`未応募の時間帯（${holeText}）だけを取り消します。既に決まっている応募はそのまま残ります。よろしいですか？`,()=>{
+    // 変更前の内容を保存（依頼者通知用）
+    const before={date:r.date, dateEnd:r.dateEnd, start:r.start, end:r.end, memo:r.memo||''};
+    // 連続した埋まり区間でマージ
+    const fillRanges=fills.map(f=>[reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end})[0],
+                                   reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end})[1]])
+                          .sort((a,b)=>a[0]-b[0]);
+    const merged=[];
+    for(const [s,e] of fillRanges){
+      if(merged.length && merged[merged.length-1][1]>=s){
+        merged[merged.length-1][1]=Math.max(merged[merged.length-1][1],e);
+      }else merged.push([s,e]);
+    }
+    // 元の依頼を最初の区間に縮める
+    const first=merged[0];
+    const a=minToDateTime(first[0]), b=minToDateTime(first[1]);
+    r.date=a.date; r.dateEnd=b.date; r.start=a.time; r.end=b.time;
+    r.fills=fills.filter(f=>{
+      const [fs,fe]=[reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end})[0],
+                     reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end})[1]];
+      return fs>=first[0] && fe<=first[1];
+    });
+    // 従業員発なら依頼者に通知
+    if(!r.byStore){
+      r.editedByStore=true;
+      r.editedFrom=before;
+      r.editedSeen=false;
+    }
+    // 2つ目以降は別依頼として複製
+    for(let i=1;i<merged.length;i++){
+      const [ms,me]=merged[i];
+      const ma=minToDateTime(ms), mb=minToDateTime(me);
+      const sub={...r, id:Date.now()+i, date:ma.date, dateEnd:mb.date, start:ma.time, end:mb.time,
+        fills:fills.filter(f=>{
+          const [fs,fe]=[reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end})[0],
+                         reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end})[1]];
+          return fs>=ms && fe<=me;
+        })
+      };
+      // 分割された側にも編集通知を引き継ぐ（同じ before を使う）
+      DB.requests.push(sub);
+      saveRequest(sub);
+    }
+    saveRequest(r);
+    renderAdmin();
+    toast('未応募部分をキャンセルしました');
+  });
+}
+// 管理者：未対応の依頼の時間を変更
+let editingId=null;
+function adminEditRequest(id){
+  const r=DB.requests.find(x=>x.id===id);
+  if(!r) return;
+  if((r.fills||[]).length){ toast('応募が入っているため編集できません'); renderAdmin(); return; }
+  editingId=id;
+  document.getElementById('edit-date').value=r.date;
+  document.getElementById('edit-date-end').value=r.dateEnd||r.date;
+  document.getElementById('edit-start').value=r.start;
+  document.getElementById('edit-end').value=r.end;
+  document.getElementById('edit-memo').value=r.memo||'';
+  document.getElementById('edit-min-apply').innerHTML=minApplyOptions(r.minApplyMinutes||0);
+  document.getElementById('edit-overlay').classList.add('show');
+}
+function closeEditModal(){ document.getElementById('edit-overlay').classList.remove('show'); editingId=null; }
+document.getElementById('edit-save').onclick=function(){
+  const r=DB.requests.find(x=>x.id===editingId);
+  if(!r){ closeEditModal(); return; }
+  if((r.fills||[]).length){ toast('応募が入っているため編集できません'); closeEditModal(); renderAdmin(); return; }
+  const date=document.getElementById('edit-date').value;
+  const dateEnd=document.getElementById('edit-date-end').value;
+  const start=document.getElementById('edit-start').value;
+  const end=document.getElementById('edit-end').value;
+  if(!date||!dateEnd){ toast('開始日と終了日を選んでください'); return; }
+  if(dateEnd+end <= date+start){ toast('終了が開始より前か同じになっています'); return; }
+  const memo=document.getElementById('edit-memo').value.trim();
+  const minApply=parseInt(document.getElementById('edit-min-apply').value,10)||0;
+  // 依頼者本人の他の依頼と時間が重ならないか（従業員発のみ・自分自身は除外）
+  const range=reqRange({date,dateEnd,start,end});
+  if(range[1]-range[0] > 24*60){ toast('ヘルプ依頼は24時間以内にしてください'); return; }
+  const clash=!r.byStore && DB.requests.some(x=>x.id!==r.id && !x.byStore && x.by===r.by && !x.cancelledByStore && overlaps(reqRange(x), range));
+  if(clash){ toast('依頼者の他の依頼と時間帯が重なります'); return; }
+  // 変更前の内容を履歴として保存（依頼者に知らせるため）
+  const before={date:r.date, dateEnd:r.dateEnd, start:r.start, end:r.end, memo:r.memo||''};
+  const changed = before.date!==date || before.dateEnd!==dateEnd || before.start!==start || before.end!==end || before.memo!==memo;
+  r.date=date; r.dateEnd=dateEnd; r.start=start; r.end=end; r.memo=memo; r.minApplyMinutes=minApply;
+  // 従業員発の依頼で内容が変わった場合のみ、依頼者に編集印を付ける（店舗発は知らせる相手がいない）
+  if(changed && !r.byStore){
+    r.editedByStore=true;
+    r.editedFrom={date:before.date, dateEnd:before.dateEnd, start:before.start, end:before.end, memo:before.memo};
+    r.editedSeen=false;
+  }
+  saveRequest(r);
+  // 依頼者と応募者全員＋依頼元店舗とその代理にも編集通知
+  if(changed){
+    const targets=[];
+    if(!r.byStore && r.by) targets.push({role:'emp', code:r.by});
+    const fillCodes=(r.fills||[]).map(f=>f.by);
+    if(fillCodes.length) targets.push({role:'emp', codes:fillCodes});
+    targets.push(...storeAndProxies(r.store));
+    pushNotify(targets, '✏️ 依頼が編集されました',
+      `${storeLabel(r.store)} ／ ${spanTime(r)}`);
+  }
+  closeEditModal();
+  renderAdmin();
+  toast('依頼を編集しました');
+};
+
+// PWマスク表示の切替
+function togglePwView(spanId, real){
+  const sp=document.getElementById(spanId);
+  if(!sp) return;
+  const btn=sp.nextElementSibling;
+  if(sp.textContent==='••••'){
+    sp.textContent=real;
+    if(btn) btn.textContent='隠す';
+    // 10秒後に自動で隠す
+    setTimeout(()=>{ if(sp.textContent===real){ sp.textContent='••••'; if(btn) btn.textContent='表示'; } },10000);
+  }else{
+    sp.textContent='••••';
+    if(btn) btn.textContent='表示';
+  }
+}
+// 自店舗が出している依頼（来てくれる人を確認）
+function renderAdminOutgoing(store){
+  const el=document.getElementById('admin-outgoing');
+  // 自店舗の依頼 + 代理権限を付与してくれている他店の依頼
+  const proxyStores = Object.entries(DB.stores)
+    .filter(([c,s])=>c!==store && (s.proxy||[]).includes(store))
+    .map(([c])=>c);
+  const allowedStores = [store, ...proxyStores];
+  const list=DB.requests.filter(r=>allowedStores.includes(r.store) && !r.cancelledByStore)
+    .sort((a,b)=>a.date.localeCompare(b.date));
+  if(list.length===0){
+    el.innerHTML='<div class="empty"><span class="ic">📭</span>現在、依頼はありません</div>';
+    return;
+  }
+  el.innerHTML=list.map(r=>{
+    const fills=r.fills||[];
+    const filled=isFullyFilled(r);
+    const isProxy = r.store!==store;
+    const proxyBadge = isProxy ? `<span class="badge" style="background:#fef3c7;color:#92400e;margin-left:6px">代理 ${storeLabel(r.store)}</span>` : '';
+    const badge=filled
+      ? '<span class="badge filled">充足</span>'
+      : (fills.length ? '<span class="badge filled">一部充足</span>' : '<span class="badge open">募集中</span>');
+    const canEdit = fills.length===0;
+    const canCancel = !filled;
+    let actions='';
+    if(canEdit || canCancel){
+      actions=`<div class="row" style="margin-top:12px;gap:8px;justify-content:flex-end">
+        ${canEdit?`<button class="btn sec sm" onclick="adminEditRequest(${r.id})">編集</button>`:''}
+        ${canCancel?`<button class="btn danger sm" onclick="adminCancelRequest(${r.id})">キャンセル</button>`:''}
+      </div>`;
+    }
+    return `<div class="item">
+      <div class="top">
+        <div>
+          <div class="date">${fmtDate(r.date)}${proxyBadge}</div>
+          <div class="time">${spanTime(r)}</div>
+          <div class="meta">依頼者：${r.byStore?'店舗':'従業員 '+empLabel(r.by)}</div>
+        </div>
+        ${badge}
+      </div>
+      ${memoLine(r)}
+      ${minApplyLabel(r)}
+      <div class="scope-row">
+        <span class="scope-label">募集範囲</span>
+        <select onchange="setRequestScope(${r.id},this.value)">
+          <option value="nearby" ${(r.scope||'nearby')==='nearby'?'selected':''}>近隣店舗まで（近隣）</option>
+          <option value="inArea" ${r.scope==='inArea'?'selected':''}>エリア内店舗まで（エリア内）</option>
+          <option value="all" ${r.scope==='all'?'selected':''}>応募できる店舗まで（応募可）</option>
+        </select>
+      </div>
+      ${fillsSummary(r)}
+      ${actions}
+    </div>`;
+  }).join('');
+}
+
+// 自店舗から応援に行く予定（送り出す側）
+function renderAdminIncoming(store){
+  const el=document.getElementById('admin-incoming');
+  const rows=[];
+  for(const r of DB.requests){
+    if(r.cancelledByStore) continue;
+    for(const f of (r.fills||[])){
+      if(DB.employees[f.by]?.store===store){
+        const [s,e]=reqRange(f);
+        const workStore = f.store || r.store;
+        rows.push({r, by:f.by, s, e, workStore});
+      }
+    }
+  }
+  rows.sort((a,b)=>a.s-b.s);
+  if(rows.length===0){
+    el.innerHTML='<div class="empty"><span class="ic">🚶</span>現在、応援に行く予定はありません</div>';
+    return;
+  }
+  el.innerHTML=rows.map(x=>{
+    const empStore = DB.employees[x.by]?.store;
+    const swapped = x.workStore !== x.r.store;
+    const workLine = swapped
+      ? `<div class="meta">応援者：<b>${empLabel(x.by)}</b>（所属店舗：${storeLabel(empStore)}） ／ <span style="color:var(--brand);font-weight:700">勤務先：${storeLabel(x.workStore)}</span> <span style="font-size:12px;color:var(--sub)">（変更：元は ${storeLabel(x.r.store)}）</span></div>`
+      : `<div class="meta">応援者：<b>${empLabel(x.by)}</b>（所属店舗：${storeLabel(empStore)}） ／ <span style="color:var(--brand);font-weight:700">勤務先：${storeLabel(x.workStore)}</span></div>`;
+    return `<div class="item">
+      <div class="top">
+        <div>
+          <div class="time">${fmtMinSpan(x.s,x.e)}</div>
+          ${workLine}
+        </div>
+        <span class="badge mine">応援予定</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+function saveStoreInfo(){
+  const s=DB.stores[session.code];
+  s.name=document.getElementById('store-name').value.trim();
+  s.pref=document.getElementById('store-pref').value;
+  s.area=document.getElementById('store-area').value.trim();
+  saveStore(session.code);
+  renderAdmin();
+  toast('店舗情報を保存しました');
+}
+async function changeEmpOwnPassword(){
+  const cur=document.getElementById('emp-pw-cur').value;
+  const n1=document.getElementById('emp-pw-new1').value;
+  const n2=document.getElementById('emp-pw-new2').value;
+  if(!cur||!n1||!n2){ toast('すべての欄を入力してください'); return; }
+  if(n1!==n2){ toast('新しいパスワード（確認）が一致しません'); return; }
+  if(n1.length<8){ toast('パスワードは8文字以上にしてください'); return; }
+  if(n1===cur){ toast('現在と同じパスワードです'); return; }
+  const {ok}=await authSignIn(empEmail(session.code), cur);
+  if(!ok){ toast('現在のパスワードが違います'); return; }
+  const {error}=await sb.auth.updateUser({password:n1});
+  if(error){ toast('PW変更失敗：'+friendlyError(error.message,'パスワード変更に失敗しました')); return; }
+  // pw_changed を true に
+  await sb.from('employees').update({pw_changed:true}).eq('code', session.code);
+  if(DB.employees[session.code]) DB.employees[session.code].pwChanged = true;
+  document.getElementById('emp-pw-cur').value='';
+  document.getElementById('emp-pw-new1').value='';
+  document.getElementById('emp-pw-new2').value='';
+  auditLog('emp_pw_change', {targetType:'auth', targetCode:session.code});
+  toast('パスワードを変更しました');
+  go('s-emp-menu');
+}
+
+// 強制PW変更（初回ログイン時・PWリセット直後）
+async function forcePwChange(){
+  if(!session){ go('s-entry'); return; }
+  const cur=document.getElementById('force-pw-cur').value;
+  const n1=document.getElementById('force-pw-new1').value;
+  const n2=document.getElementById('force-pw-new2').value;
+  if(!cur||!n1||!n2){ toast('すべての欄を入力してください'); return; }
+  if(n1!==n2){ toast('新しいパスワード（確認）が一致しません'); return; }
+  if(n1.length<8){ toast('パスワードは8文字以上にしてください'); return; }
+  if(n1===cur){ toast('現在と同じパスワードです'); return; }
+  // 役割別にメール構築・再認証・更新
+  let email='';
+  if(session.type==='store') email = storeEmail(session.code);
+  else if(session.type==='emp') email = empEmail(session.code);
+  else { toast('この画面は店舗・従業員専用です'); return; }
+  const {ok}=await authSignIn(email, cur);
+  if(!ok){ toast('現在のパスワードが違います'); return; }
+  const {error}=await sb.auth.updateUser({password:n1});
+  if(error){ toast('PW変更失敗：'+friendlyError(error.message,'パスワード変更に失敗しました')); return; }
+  // pw_changed フラグ更新
+  if(session.type==='store'){
+    const r = await sb.from('stores').update({pw_changed:true}).eq('code', session.code).select();
+    if(r.error){ toast('フラグ更新失敗：'+friendlyError(r.error.message,'パスワード変更に失敗しました')); return; }
+    if(!r.data || r.data.length===0){ toast('パスワード変更に失敗しました'); return; }
+    if(DB.stores[session.code]) DB.stores[session.code].pwChanged = true;
+    auditLog('store_pw_change', {targetType:'auth', targetCode:session.code, detail:{forced:true}});
+  } else {
+    const r = await sb.from('employees').update({pw_changed:true}).eq('code', session.code).select();
+    if(r.error){ toast('フラグ更新失敗：'+friendlyError(r.error.message,'パスワード変更に失敗しました')); return; }
+    if(!r.data || r.data.length===0){ toast('パスワード変更に失敗しました'); return; }
+    if(DB.employees[session.code]) DB.employees[session.code].pwChanged = true;
+    auditLog('emp_pw_change', {targetType:'auth', targetCode:session.code, detail:{forced:true}});
+  }
+  document.getElementById('force-pw-cur').value='';
+  document.getElementById('force-pw-new1').value='';
+  document.getElementById('force-pw-new2').value='';
+  toast('パスワードを変更しました');
+  // 通常画面へ遷移
+  if(session.type==='store'){ renderAdmin(); go('s-admin'); }
+  else { go('s-emp-menu'); }
+}
+
+async function forcePwLogout(){
+  await logout();
+}
+
+async function changeStorePassword(){
+  const s=DB.stores[session.code];
+  const cur=document.getElementById('store-pw-cur').value;
+  const n1=document.getElementById('store-pw-new').value;
+  const n2=document.getElementById('store-pw-new2').value;
+  if(!cur||!n1||!n2){ toast('すべての欄を入力してください'); return; }
+  if(n1!==n2){ toast('新しいパスワード（確認）が一致しません'); return; }
+  if(n1.length<8){ toast('パスワードは8文字以上にしてください'); return; }
+  if(n1===cur){ toast('現在と同じパスワードです'); return; }
+  // 現在のPW確認のため再ログインを試みる
+  const {ok}=await authSignIn(storeEmail(session.code), cur);
+  if(!ok){ toast('現在のパスワードが違います'); return; }
+  // パスワード更新
+  const {error}=await sb.auth.updateUser({password:n1});
+  if(error){ toast('PW変更失敗：'+friendlyError(error.message,'パスワード変更に失敗しました')); return; }
+  s.pw=n1;
+  // pw_changed を true に
+  await sb.from('stores').update({pw_changed:true}).eq('code', session.code);
+  s.pwChanged = true;
+  document.getElementById('store-pw-cur').value='';
+  document.getElementById('store-pw-new').value='';
+  document.getElementById('store-pw-new2').value='';
+  auditLog('store_pw_change', {targetType:'auth', targetCode:session.code});
+  toast('店舗パスワードを変更しました');
+}
+async function addEmp(){
+  const code=document.getElementById('new-emp-code').value.trim();
+  const name=document.getElementById('new-emp-name').value.trim();
+  if(!code){ toast('従業員コードを入力'); return; }
+  if(DB.employees[code]){ toast('そのコードは既に使われています'); return; }
+  const pw='12345678';
+  const {ok,error}=await callEdge('create-employee',{code, name, pw, store:session.code});
+  if(!ok){ toast('追加失敗：'+friendlyError(error,'追加に失敗しました')); return; }
+  DB.employees[code]={store:session.code, name, pwChanged:false};
+  document.getElementById('new-emp-code').value='';
+  document.getElementById('new-emp-name').value='';
+  renderAdmin();
+  auditLog('employee_create', {targetType:'employee', targetCode:code, detail:{store:session.code, name}});
+  toast('従業員を追加しました（初期PW: 12345678）');
+}
+// 従業員編集モーダル
+let empEditingCode=null;
+function editEmp(code){
+  const e=DB.employees[code]; if(!e) return;
+  empEditingCode=code;
+  document.getElementById('emp-edit-target').textContent=`${code}${e.name?`（${e.name}）`:''}`;
+  document.getElementById('emp-edit-code').value=code;
+  document.getElementById('emp-edit-name').value=e.name||'';
+  document.getElementById('emp-edit-overlay').classList.add('show');
+}
+function closeEmpEditModal(){
+  document.getElementById('emp-edit-overlay').classList.remove('show');
+  empEditingCode=null;
+}
+document.getElementById('emp-edit-save').onclick=async function(){
+  if(!empEditingCode||!DB.employees[empEditingCode]){ closeEmpEditModal(); return; }
+  const oldCode=empEditingCode;
+  const newCode=document.getElementById('emp-edit-code').value.trim();
+  const newName=document.getElementById('emp-edit-name').value.trim();
+  if(!newCode){ toast('従業員コードを入力してください'); return; }
+  if(newCode!==oldCode && DB.employees[newCode]){ toast('そのコードは既に使われています'); return; }
+  const body={oldCode, newName};
+  if(newCode!==oldCode) body.newCode=newCode;
+  const {ok,error}=await callEdge('update-employee', body);
+  if(!ok){ toast('編集失敗：'+friendlyError(error,'編集に失敗しました')); return; }
+  // ローカル反映
+  const e=DB.employees[oldCode];
+  e.name=newName;
+  if(newCode!==oldCode){
+    DB.employees[newCode]={...e};
+    delete DB.employees[oldCode];
+    DB.requests.forEach(r=>{
+      if(r.by===oldCode) r.by=newCode;
+      if(r.fills) r.fills.forEach(f=>{ if(f.by===oldCode) f.by=newCode; });
+    });
+  }
+  closeEmpEditModal();
+  if(session.type==='hq') renderHqEditEmps();
+  if(session.type==='store') renderAdmin();
+  auditLog('employee_update', {targetType:'employee', targetCode:newCode!==oldCode?newCode:oldCode, detail:{oldCode, newCode, newName}});
+  toast('従業員情報を更新しました');
+};
+function resetEmpPassword(code){
+  if(!DB.employees[code]) return;
+  const e=DB.employees[code];
+  const label=`従業員 ${code}${e.name?`（${e.name}）`:''}`;
+  confirmModal('パスワードをリセット',`${label} のパスワードを初期パスワード「12345678」に戻します。本人にお伝えください。よろしいですか？`,async ()=>{
+    const {ok,error}=await callEdge('admin-update-password',{targetType:'employee', targetCode:code, newPassword:'12345678'});
+    if(!ok){ toast('PWリセット失敗：'+friendlyError(error,'パスワードリセットに失敗しました')); return; }
+    if(DB.employees[code]) DB.employees[code].pwChanged = false;
+    renderAdmin();
+    if(typeof renderHqEditEmps==='function') renderHqEditEmps();
+    auditLog('employee_pw_reset', {targetType:'employee', targetCode:code});
+    toast('パスワードをリセットしました（12345678）');
+  });
+}
+function delEmp(code){
+  confirmModal('従業員を削除','コード '+code+' を削除します。よろしいですか？',async ()=>{
+    const {ok,error}=await callEdge('delete-user',{targetType:'employee', targetCode:code});
+    if(!ok){ toast('削除失敗：'+friendlyError(error,'削除に失敗しました')); return; }
+    delete DB.employees[code];
+    DB.requests=DB.requests.filter(r=>r.by!==code);
+    DB.requests.forEach(r=>{ if(r.fills) r.fills=r.fills.filter(f=>f.by!==code); });
+    renderAdmin();
+    auditLog('employee_delete', {targetType:'employee', targetCode:code});
+    toast('削除しました');
+  });
+}
+/* ============ 従業員ログイン ============ */
+async function empLogin(){
+  const code=document.getElementById('emp-code').value.trim();
+  const pw=document.getElementById('emp-pw').value;
+  if(!code||!pw){ toast('従業員コードとパスワードを入力してください'); return; }
+  const {ok}=await authSignIn(empEmail(code), pw);
+  if(!ok){
+    auditLog('login_failed', {actorRole:'emp', actorCode:code, detail:{reason:'auth_failed'}});
+    toast('コードまたはパスワードが違います'); return;
+  }
+  await loadAll();
+  const e=DB.employees[code];
+  if(!e){ toast('従業員データが見つかりません'); await authSignOut(); return; }
+  session={type:'emp', code, store:e.store};
+  resetIdleTimer();
+  document.getElementById('emp-code').value='';
+  document.getElementById('emp-pw').value='';
+  document.getElementById('emp-who').textContent=code;
+  document.getElementById('emp-store').textContent=storeLabel(e.store);
+  updateApplyBadge();
+  auditLog('login_success');
+  // 初期PWのままなら強制変更画面へ
+  if(!e.pwChanged){
+    go('s-force-pw');
+    return;
+  }
+  go('s-emp-menu');
+}
+// 応募ボタンの新着バッジを更新
+function updateApplyBadge(){
+  const b=document.getElementById('apply-badge');
+  const n=countApplicable();
+  if(n>0){ b.textContent=n; b.style.display='flex'; }
+  else{ b.style.display='none'; }
+}
+
+/* ============ ヘルプ依頼 ============ */
+function fmtDate(d){
+  const dt=new Date(d+'T00:00:00');
+  const w=['日','月','火','水','木','金','土'][dt.getDay()];
+  return `${dt.getMonth()+1}/${dt.getDate()}（${w}）`;
+}
+// 開始〜終了をまとめて表示（日またぎ対応）
+function fmtSpan(r){
+  const sameDay = !r.dateEnd || r.dateEnd===r.date;
+  if(sameDay) return `${fmtDate(r.date)} ${r.start} 〜 ${r.end}`;
+  return `${fmtDate(r.date)} ${r.start} 〜 ${fmtDate(r.dateEnd)} ${r.end}`;
+}
+// 日付見出しの下の時刻行（日またぎなら終了に翌日の日付を添える）
+function spanTime(r){
+  const sameDay = !r.dateEnd || r.dateEnd===r.date;
+  if(sameDay) return `${r.start} 〜 ${r.end}`;
+  return `${r.start} 〜 翌 ${fmtDate(r.dateEnd)} ${r.end}`;
+}
+// 依頼を「開始/終了の通し時刻(分)」に変換（日またぎ対応）
+function reqRange(r){
+  const toMin=(d,t)=>{
+    const [h,m]=t.split(':').map(Number);
+    const days=Math.round((new Date(d+'T00:00:00')-new Date('2000-01-01T00:00:00'))/86400000);
+    return days*1440 + h*60 + m;
+  };
+  return [toMin(r.date,r.start), toMin(r.dateEnd||r.date, r.end)];
+}
+// 依頼rの応募対象とする店舗集合（scopeに応じて nearby / inArea / targets を返す）
+function scopeStoresOf(r){
+  const s=DB.stores[r.store]; if(!s) return [];
+  const scope=r.scope||'nearby';
+  if(scope==='nearby') return s.nearby||[r.store];
+  if(scope==='inArea') return s.inArea||[r.store];
+  return s.targets||[r.store];
+}
+function scopeLabel(scope){
+  return scope==='nearby'?'近隣店舗まで（近隣）': scope==='inArea'?'エリア内店舗まで（エリア内）':'応募できる店舗まで（応募可）';
+}
+// 最低応募時間のラベル（0なら空文字）
+function minApplyLabel(r){
+  const m = r.minApplyMinutes || 0;
+  if(m === -1) return `<div class="item-line" style="color:var(--sub)">⏱ 全時間希望者のみ（募集枠すべてに入れる方）</div>`;
+  if(m <= 0) return '';
+  const h = Math.floor(m/60), mm = m%60;
+  const t = h>0 ? (mm>0?`${h}時間${mm}分`:`${h}時間`) : `${mm}分`;
+  return `<div class="item-line" style="color:var(--sub)">⏱ 最低応募時間：${t}以上</div>`;
+}
+// 最低応募時間セレクトのoption群を生成（selectedValueを選択状態に）
+function minApplyOptions(selectedValue){
+  const v = (selectedValue==null ? 0 : selectedValue);
+  let opts = [];
+  opts.push(`<option value="0" ${v===0?'selected':''}>制限なし</option>`);
+  for(let m=60; m<=480; m+=30){
+    const h=Math.floor(m/60), mm=m%60;
+    const t = h>0 ? (mm>0?`${h}時間${mm}分`:`${h}時間`) : `${mm}分`;
+    opts.push(`<option value="${m}" ${v===m?'selected':''}>${t}以上</option>`);
+  }
+  opts.push(`<option value="-1" ${v===-1?'selected':''}>全時間希望者のみ</option>`);
+  return opts.join('');
+}
+// 2つの時間帯が重なるか
+function overlaps(a,b){ return a[0] < b[1] && b[0] < a[1]; }
+
+// 通し時刻(分) → {date, time}
+function minToDateTime(min){
+  const days=Math.floor(min/1440), rest=min-days*1440;
+  const base=new Date('2000-01-01T00:00:00');
+  base.setDate(base.getDate()+days);
+  const date=base.getFullYear()+'-'+String(base.getMonth()+1).padStart(2,'0')+'-'+String(base.getDate()).padStart(2,'0');
+  const h=String(Math.floor(rest/60)).padStart(2,'0');
+  const m=String(rest%60).padStart(2,'0');
+  return {date, time:`${h}:${m}`};
+}
+// 区間[startMin,endMin]を「○○ 〜 ○○」表示に（日またぎ対応）
+function fmtMinSpan(s,e){
+  const a=minToDateTime(s), b=minToDateTime(e);
+  if(a.date===b.date) return `${fmtDate(a.date)} ${a.time} 〜 ${b.time}`;
+  return `${fmtDate(a.date)} ${a.time} 〜 ${fmtDate(b.date)} ${b.time}`;
+}
+// 依頼の埋まった区間リスト（fills）→ [[s,e],...] にして昇順マージ
+function filledRanges(r){
+  const fills=(r.fills||[]).map(f=>[
+    reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end})[0],
+    reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end})[1]
+  ]).sort((a,b)=>a[0]-b[0]);
+  return fills;
+}
+// 依頼の空き区間（穴）を計算 → [[s,e],...]
+function freeRanges(r){
+  const [S,E]=reqRange(r);
+  const filled=filledRanges(r);
+  const holes=[];
+  let cur=S;
+  for(const [fs,fe] of filled){
+    if(fs>cur) holes.push([cur, Math.min(fs,E)]);
+    cur=Math.max(cur, fe);
+  }
+  if(cur<E) holes.push([cur,E]);
+  return holes.filter(h=>h[1]>h[0]);
+}
+// 完全に埋まったか
+function isFullyFilled(r){ return freeRanges(r).length===0; }
+// 自分(code)が受けている区間があるか
+function myFills(r,code){ return (r.fills||[]).filter(f=>f.by===code); }
+
+// 充足状況の内訳（管理者・依頼者向け）：埋まった区間と残りの穴
+function fillsSummary(r){
+  const fills=(r.fills||[]).slice().sort((a,b)=>reqRange(a)[0]-reqRange(b)[0]);
+  const holes=freeRanges(r);
+  let html='';
+  if(fills.length){
+    html+=fills.map((f,idx)=>{
+      const [s,e]=reqRange(f);
+      const empStore = DB.employees[f.by]?.store;
+      const workStore = f.store || r.store;
+      return `<div class="item-line ok" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;justify-content:space-between">
+        <span>✅ ${fmtMinSpan(s,e)}：応援者 ${empLabel(f.by)}（所属店舗：${storeLabel(empStore)}）／ <span style="color:var(--brand);font-weight:700">勤務先：${storeLabel(workStore)}</span></span>
+        <button class="btn sec sm" onclick="openSwapModal(${r.id},${idx})" style="font-size:12px;padding:4px 10px">勤務先を変更</button>
+      </div>`;
+    }).join('');
+  }
+  if(holes.length){
+    html+=holes.map(h=>`<div class="item-line warn">⏳ ${fmtMinSpan(h[0],h[1])}：募集中</div>`).join('');
+  }
+  if(!fills.length && !holes.length){
+    html+='<div class="item-line warn">⏳ まだ応募者はいません</div>';
+  }
+  return html;
+}
+// 依頼者向け：時間と状態だけ（店名・番号・氏名は出さない）
+function fillsSummaryForRequester(r){
+  const fills=(r.fills||[]).slice().sort((a,b)=>reqRange(a)[0]-reqRange(b)[0]);
+  const holes=freeRanges(r);
+  let html='';
+  if(fills.length){
+    html+=fills.map(f=>{
+      const [s,e]=reqRange(f);
+      return `<div class="item-line ok">✅ ${fmtMinSpan(s,e)}：応募確定</div>`;
+    }).join('');
+  }
+  if(holes.length){
+    html+=holes.map(h=>`<div class="item-line warn">⏳ ${fmtMinSpan(h[0],h[1])}：募集中</div>`).join('');
+  }
+  if(!fills.length && !holes.length){
+    html+='<div class="item-line warn">⏳ まだ応募者はいません</div>';
+  }
+  return html;
+}
+
+function submitRequest(){
+  const date=document.getElementById('req-date').value;
+  const dateEnd=document.getElementById('req-date-end').value;
+  const start=document.getElementById('req-start').value;
+  const end=document.getElementById('req-end').value;
+  if(!date||!dateEnd){ toast('開始日と終了日を選んでください'); return; }
+  if(dateEnd+end <= date+start){ toast('終了が開始より前か同じになっています'); return; }
+  const newRange=reqRange({date,dateEnd,start,end});
+  if(newRange[1]-newRange[0] > 24*60){ toast('ヘルプ依頼は24時間以内にしてください'); return; }
+  const neo={date, dateEnd, start, end};
+  const range=newRange;
+  // 自分の既存依頼と時間帯が重ならないか
+  const clash=DB.requests.some(r=>r.by===session.code && !r.cancelledByStore && overlaps(reqRange(r), range));
+  if(clash){ toast('その時間帯に重なる依頼が既にあります'); return; }
+  const memo=document.getElementById('req-memo').value.trim();
+  const newReq={
+    id:Date.now(), date, dateEnd, start, end, memo,
+    store:session.store, by:session.code, scope:'nearby', fills:[],
+    minApplyMinutes:0
+  };
+  DB.requests.push(newReq);
+  saveRequest(newReq,{isNew:true});
+  // プッシュ通知：募集範囲の従業員へ
+  pushNotify(notifyTargetsForRequest(newReq), '🆘 新しいヘルプ依頼',
+    `${storeLabel(newReq.store)} ／ ${spanTime(newReq)}`);
+  document.getElementById('req-memo').value='';
+  renderMyRequests();
+  toast('ヘルプ依頼を出しました');
+}
+// 店舗発の依頼
+function storeSubmitRequest(){
+  const date=document.getElementById('sreq-date').value;
+  const dateEnd=document.getElementById('sreq-date-end').value;
+  const start=document.getElementById('sreq-start').value;
+  const end=document.getElementById('sreq-end').value;
+  if(!date||!dateEnd){ toast('開始日と終了日を選んでください'); return; }
+  if(dateEnd+end <= date+start){ toast('終了が開始より前か同じになっています'); return; }
+  const sRange=reqRange({date,dateEnd,start,end});
+  if(sRange[1]-sRange[0] > 24*60){ toast('ヘルプ依頼は24時間以内にしてください'); return; }
+  const memo=document.getElementById('sreq-memo').value.trim();
+  const minApply=parseInt(document.getElementById('sreq-min-apply').value,10)||0;
+  const newReq={
+    id:Date.now(), date, dateEnd, start, end, memo,
+    store:session.code, by:null, byStore:true, scope:'nearby', fills:[],
+    minApplyMinutes:minApply
+  };
+  DB.requests.push(newReq);
+  saveRequest(newReq,{isNew:true});
+  pushNotify(notifyTargetsForRequest(newReq), '🆘 店舗からのヘルプ依頼',
+    `${storeLabel(newReq.store)} ／ ${spanTime(newReq)}`);
+  document.getElementById('sreq-memo').value='';
+  renderAdmin();
+  toast('店舗からの依頼を出しました');
+}
+function renderMyRequests(){
+  const el=document.getElementById('my-requests');
+  const mine=DB.requests.filter(r=>r.by===session.code).sort((a,b)=>a.date.localeCompare(b.date));
+  if(mine.length===0){
+    el.innerHTML='<div class="empty"><span class="ic">📭</span>まだ依頼はありません</div>';
+    return;
+  }
+  el.innerHTML=mine.map(r=>{
+    // 店舗がキャンセルした依頼 → 確認するまで通知として残す
+    if(r.cancelledByStore){
+      return `<div class="item">
+        <div class="top">
+          <div>
+            <div class="date" style="text-decoration:line-through;color:var(--sub)">${fmtDate(r.date)}</div>
+            <div class="time" style="text-decoration:line-through;color:var(--sub)">${spanTime(r)}</div>
+          </div>
+          <span class="badge cancel">取消</span>
+        </div>
+        <div class="edit-note cancel-note">
+          <div>🚫 店舗がこの依頼をキャンセルしました</div>
+          <button class="btn sec sm" style="margin-top:8px" onclick="ackCancel(${r.id})">確認しました</button>
+        </div>
+      </div>`;
+    }
+    // 店舗が時間変更した場合の通知バナー
+    let editNote='';
+    if(r.editedByStore && r.editedFrom){
+      const seen=r.editedSeen?' seen':'';
+      editNote=`<div class="edit-note${seen}">
+        <div>🔔 店舗が依頼内容を変更しました</div>
+        <div class="from">変更前：${fmtSpan(r.editedFrom)}${r.editedFrom.memo?`／メモ：${escapeHtml(r.editedFrom.memo)}`:''}</div>
+        ${r.editedSeen?'':`<button class="btn sec sm" style="margin-top:8px" onclick="ackEdit(${r.id})">確認しました</button>`}
+      </div>`;
+    }
+    const fills=r.fills||[];
+    const filled=isFullyFilled(r);
+    const badge=filled
+      ? '<span class="badge filled">充足</span>'
+      : (fills.length ? '<span class="badge filled">一部充足</span>' : '<span class="badge open">募集中</span>');
+    // まだ穴が残っていれば依頼者はキャンセル可
+    const cancelBtn = filled ? '' : `
+      <div style="margin-top:12px;display:flex;justify-content:flex-end">
+        <button class="btn danger sm" onclick="cancelRequest(${r.id})">キャンセル</button>
+      </div>`;
+    return `<div class="item">
+      <div class="top">
+        <div>
+          <div class="date">${fmtDate(r.date)}</div>
+          <div class="time">${spanTime(r)}</div>
+        </div>
+        ${badge}
+      </div>
+      ${editNote}
+      ${memoLine(r)}
+      ${minApplyLabel(r)}
+      ${fillsSummaryForRequester(r)}
+      ${cancelBtn}
+    </div>`;
+  }).join('');
+}
+// 依頼者が変更を確認した
+function ackEdit(id){
+  const r=DB.requests.find(x=>x.id===id);
+  if(r){ r.editedSeen=true; saveRequest(r); renderMyRequests(); }
+}
+// 依頼者が店舗キャンセルを確認した → ここで実際に削除
+function ackCancel(id){
+  DB.requests=DB.requests.filter(x=>x.id!==id);
+  deleteRequestDB(id);
+  renderMyRequests();
+}
+function cancelRequest(id){
+  const r=DB.requests.find(x=>x.id===id);
+  if(!r) return;
+  const fills=(r.fills||[]).slice();
+  if(fills.length===0){
+    confirmModal('依頼をキャンセル','このヘルプ依頼を取り消します。よろしいですか？',()=>{
+      DB.requests=DB.requests.filter(x=>x.id!==id);
+      deleteRequestDB(id);
+      renderMyRequests(); toast('キャンセルしました');
+    });
+    return;
+  }
+  // 一部充足 → 未応募部分のみキャンセル（埋まった区間は残す）
+  const holes=freeRanges(r);
+  if(holes.length===0){
+    toast('すべて埋まっているためキャンセルできません'); return;
+  }
+  const holeText=holes.map(h=>fmtMinSpan(h[0],h[1])).join('、');
+  confirmModal('未応募部分をキャンセル',`未応募の時間帯（${holeText}）だけを取り消します。既に決まっている応募はそのまま残ります。よろしいですか？`,()=>{
+    // 埋まり区間を時刻昇順に並べ、連続する区間ごとにグループ化
+    const fillRanges=fills.map(f=>[reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end})[0],
+                                   reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end})[1]])
+                          .sort((a,b)=>a[0]-b[0]);
+    // 連続マージ
+    const merged=[];
+    for(const [s,e] of fillRanges){
+      if(merged.length && merged[merged.length-1][1]>=s){
+        merged[merged.length-1][1]=Math.max(merged[merged.length-1][1],e);
+      }else merged.push([s,e]);
+    }
+    // 元の依頼を、最初のマージ区間に縮める。残りのマージ区間ぶんは新規依頼として複製。
+    const first=merged[0];
+    const a=minToDateTime(first[0]), b=minToDateTime(first[1]);
+    r.date=a.date; r.dateEnd=b.date; r.start=a.time; r.end=b.time;
+    // 元のfillsから、firstに含まれるものだけを残す
+    r.fills=fills.filter(f=>{
+      const [fs,fe]=[reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end})[0],
+                     reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end})[1]];
+      return fs>=first[0] && fe<=first[1];
+    });
+    // 2つ目以降は別依頼として複製
+    for(let i=1;i<merged.length;i++){
+      const [ms,me]=merged[i];
+      const ma=minToDateTime(ms), mb=minToDateTime(me);
+      const sub={...r, id:Date.now()+i, date:ma.date, dateEnd:mb.date, start:ma.time, end:mb.time,
+        fills:fills.filter(f=>{
+          const [fs,fe]=[reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end})[0],
+                         reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end})[1]];
+          return fs>=ms && fe<=me;
+        })
+      };
+      // editedByStoreなどの状態は引き継がない（新規依頼扱い）
+      delete sub.editedByStore; delete sub.editedFrom; delete sub.editedSeen;
+      DB.requests.push(sub);
+      saveRequest(sub);
+    }
+    saveRequest(r);
+    renderMyRequests();
+    toast('未応募部分をキャンセルしました');
+  });
+}
+
+/* ============ ヘルプ応募 ============ */
+// 自分が既に拘束されている時間帯を集める（自分の依頼＋自分が応募して入った時間、全店舗横断）
+function myBusyRanges(){
+  const out=[];
+  for(const r of DB.requests){
+    if(r.cancelledByStore) continue;
+    if(r.by===session.code) out.push(reqRange(r)); // 自分が出した依頼
+    for(const f of (r.fills||[])){
+      if(f.by===session.code){
+        out.push([reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end})[0],
+                  reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end})[1]]);
+      }
+    }
+  }
+  return out;
+}
+// 依頼rの空き穴のうち、自分の拘束と重ならない部分が1つでもあるか
+function hasApplicableHole(r){
+  const busy=myBusyRanges();
+  return freeRanges(r).some(([hs,he])=>{
+    // この穴に対し、busyを引いて何か残るか
+    let segs=[[hs,he]];
+    for(const [bs,be] of busy){
+      const next=[];
+      for(const [gs,ge] of segs){
+        if(be<=gs || bs>=ge){ next.push([gs,ge]); continue; }
+        if(bs>gs) next.push([gs,bs]);
+        if(be<ge) next.push([be,ge]);
+      }
+      segs=next;
+      if(segs.length===0) break;
+    }
+    return segs.some(([a,b])=>b>a);
+  });
+}
+// その従業員が今応募できる依頼の件数
+function countApplicable(){
+  if(!session||session.type!=='emp') return 0;
+  const myStore=session.store;
+  const myStoreObj = DB.stores[myStore];
+  const applyScope = (myStoreObj && myStoreObj.applyScope) || 'nearby';
+  return DB.requests.filter(r=>{
+    if(r.by===session.code) return false;
+    if(r.cancelledByStore) return false;
+    if(isFullyFilled(r)) return false;
+    const t=scopeStoresOf(r);
+    if(!t.includes(myStore)) return false;
+    // 応募者側の許可範囲チェック（renderApplyListと同じ条件）
+    if(!isApplyAllowed(r.store, myStore, applyScope)) return false;
+    return hasApplicableHole(r);
+  }).length;
+}
+function openApply(){ renderApplyList(); go('s-apply'); }
+function renderApplyList(){
+  const myStore=session.store;
+
+  // 自分が受けた予定（これから行く先）区間ごとに表示
+  const acc=document.getElementById('my-accepted');
+  const myItems=[];
+  DB.requests.forEach(r=>{
+    if(r.cancelledByStore) return;
+    myFills(r,session.code).forEach((f,idx)=>myItems.push({r,f,idx}));
+  });
+  myItems.sort((a,b)=>(a.f.date+a.f.start).localeCompare(b.f.date+b.f.start));
+  if(myItems.length===0){
+    acc.innerHTML='<div class="empty"><span class="ic">🚶</span>受けている依頼はありません</div>';
+  }else{
+    acc.innerHTML=myItems.map(({r,f,idx})=>{
+      const workStore = f.store || r.store;
+      const swapped = workStore !== r.store;
+      const meta = swapped
+        ? `<div class="meta"><span style="color:var(--brand);font-weight:700">勤務先：${storeLabel(workStore)}${storePlace(workStore)}</span> <span style="font-size:12px;color:var(--sub)">（変更：元は ${storeLabel(r.store)}）</span></div>`
+        : `<div class="meta"><span style="color:var(--brand);font-weight:700">勤務先：${storeLabel(workStore)}${storePlace(workStore)}</span></div>`;
+      return `
+      <div class="item">
+        <div class="top">
+          <div>
+            <div class="date">${fmtDate(f.date)}</div>
+            <div class="time">${(f.dateEnd&&f.dateEnd!==f.date)?`${f.start} 〜 翌 ${fmtDate(f.dateEnd)} ${f.end}`:`${f.start} 〜 ${f.end}`}</div>
+            ${meta}
+          </div>
+          <span class="badge mine">応援予定</span>
+        </div>
+        ${memoLine(r)}
+        <div style="margin-top:12px;display:flex;justify-content:flex-end">
+          <button class="btn danger sm" onclick="cancelApply(${r.id},${idx})">取り消す</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // 応募可能な依頼を自店舗・他店舗に分けて描画
+  const myStoreObj = DB.stores[myStore];
+  const applyScope = (myStoreObj && myStoreObj.applyScope) || 'nearby';
+  const candidates=DB.requests.filter(r=>{
+    if(r.by===session.code) return false;
+    if(r.cancelledByStore) return false;
+    if(isFullyFilled(r)) return false;
+    const t=scopeStoresOf(r);
+    if(!t.includes(myStore)) return false;
+    // 応募者側の許可範囲チェック
+    if(!isApplyAllowed(r.store, myStore, applyScope)) return false;
+    return hasApplicableHole(r);
+  }).sort((a,b)=>a.date.localeCompare(b.date));
+
+  const own=candidates.filter(r=>r.store===myStore);
+  const other=candidates.filter(r=>r.store!==myStore);
+
+  const renderItems=(arr)=>{
+    if(arr.length===0) return '<div class="empty" style="padding:18px"><span class="ic">🔍</span>該当する依頼はありません</div>';
+    return arr.map(r=>{
+      const holes=freeRanges(r);
+      const partial=myFills(r,session.code).length>0;
+      const holeText=holes.map(h=>fmtMinSpan(h[0],h[1])).join('、');
+      return `
+      <div class="item">
+        <div class="top">
+          <div>
+            <div class="date">募集枠：${spanTime(r)}</div>
+            <div class="meta">${storeLabel(r.store)}${storePlace(r.store)}</div>
+          </div>
+          <span class="badge open">${partial?'追加募集':'募集中'}</span>
+        </div>
+        ${memoLine(r)}
+        ${minApplyLabel(r)}
+        <div class="item-line" style="color:var(--brand)">🕒 空き時間：${holeText}</div>
+        ${partial?'<div class="meta" style="margin-top:4px">あなたは一部の時間に応募済みです（上の予定欄で確認）</div>':''}
+        <button class="btn ok sm" style="margin-top:12px;width:100%" onclick="applyTo(${r.id})">時間を選んで応募</button>
+      </div>`;
+    }).join('');
+  };
+  document.getElementById('apply-list-own').innerHTML=renderItems(own);
+  document.getElementById('apply-list-other').innerHTML=renderItems(other);
+}
+// 部分応募モーダル
+let applyingId=null;
+function applyTo(id){
+  const r=DB.requests.find(x=>x.id===id);
+  if(!r) return;
+  applyingId=id;
+  document.getElementById('apply-store').textContent=`${storeLabel(r.store)} の依頼（募集枠：${spanTime(r)}）`;
+  const holes=freeRanges(r);
+  document.getElementById('apply-holes-info').innerHTML='🕒 空き時間：'+holes.map(h=>fmtMinSpan(h[0],h[1])).join(' ／ ');
+  const opts=timeOptions();
+  const ss=document.getElementById('apply-start'); ss.innerHTML=opts;
+  const ee=document.getElementById('apply-end'); ee.innerHTML=opts;
+  // 初期値は最初の穴の開始終了
+  const [hs,he]=holes[0];
+  const a=minToDateTime(hs), b=minToDateTime(he);
+  ss.value=a.time; ee.value=b.time;
+  document.getElementById('apply-note').textContent='上の空き時間のいずれかに収まる範囲で「開始」「終了」を選んでください。';
+  document.getElementById('apply-overlay').classList.add('show');
+}
+function closeApplyModal(){ document.getElementById('apply-overlay').classList.remove('show'); applyingId=null; }
+document.getElementById('apply-confirm').onclick=function(){
+  const r=DB.requests.find(x=>x.id===applyingId);
+  if(!r){ closeApplyModal(); return; }
+  // 応募者側の許可範囲チェック
+  const myStoreObj = DB.stores[session.store];
+  const applyScope = (myStoreObj && myStoreObj.applyScope) || 'nearby';
+  if(!isApplyAllowed(r.store, session.store, applyScope)){
+    toast('この依頼は所属店舗の応募許可範囲外です');
+    closeApplyModal();
+    return;
+  }
+  const startT=document.getElementById('apply-start').value;
+  const endT=document.getElementById('apply-end').value;
+  const holes=freeRanges(r);
+  if(holes.length===0){ toast('空きがありません'); return; }
+  // ユーザーの選んだ開始時刻と終了時刻を、いずれかの穴に当てはめて分換算する
+  // 穴ごとに「その穴の開始日と終了日」を使って解釈し、穴に収まるものを採用する
+  let chosen=null;
+  for(const [hs,he] of holes){
+    const ha=minToDateTime(hs), hb=minToDateTime(he);
+    const baseStart=reqRange({date:ha.date,dateEnd:ha.date,start:startT,end:startT})[0];
+    const baseEnd=reqRange({date:hb.date,dateEnd:hb.date,start:endT,end:endT})[0];
+    // 開始時刻が穴の開始日に属するケースと、終了日に属するケース（深夜またぎで0時以降を選んだ場合）両方を試す
+    const startCandidates=ha.date===hb.date ? [baseStart] : [baseStart, baseStart+1440];
+    for(const sMin of startCandidates){
+      let eMin=baseEnd;
+      if(eMin<=sMin) eMin+=1440;
+      if(sMin>=hs && eMin<=he && eMin>sMin){
+        chosen={sMin,eMin};
+        break;
+      }
+    }
+    if(chosen) break;
+  }
+  if(!chosen){ toast('選んだ時間が空き時間に収まっていません'); return; }
+  // 最低応募時間チェック
+  const minMin = r.minApplyMinutes || 0;
+  if(minMin === -1){
+    // 「全時間希望者のみ」：募集枠の全体を1人で受ける場合のみ許可
+    const [fullStart, fullEnd] = reqRange(r);
+    if(chosen.sMin !== fullStart || chosen.eMin !== fullEnd){
+      toast('この依頼は募集枠すべての時間に入れる方のみ応募できます');
+      return;
+    }
+  } else if(minMin > 0 && (chosen.eMin - chosen.sMin) < minMin){
+    const h = Math.floor(minMin/60), m = minMin%60;
+    const label = h>0 ? (m>0?`${h}時間${m}分`:`${h}時間`) : `${m}分`;
+    toast(`この依頼は${label}以上から応募できます`);
+    return;
+  }
+  // 自分が他で既に入っている時間と重ならないか
+  const myRange=[chosen.sMin,chosen.eMin];
+  const conflictFill=DB.requests.some(x=> (x.fills||[]).some(f=> f.by===session.code &&
+    overlaps([reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end})[0],
+              reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end})[1]], myRange)));
+  if(conflictFill){ toast('あなたが既に入っている時間と重なります'); return; }
+  // 自分が出している依頼の時間と重ならないか
+  const conflictOwn=DB.requests.some(x=> x.by===session.code && !x.cancelledByStore &&
+    overlaps(reqRange(x), myRange));
+  if(conflictOwn){ toast('あなた自身が依頼を出している時間と重なります'); return; }
+  // 確定
+  const sdt=minToDateTime(chosen.sMin), edt=minToDateTime(chosen.eMin);
+  if(!r.fills) r.fills=[];
+  r.fills.push({by:session.code, date:sdt.date, dateEnd:edt.date, start:sdt.time, end:edt.time});
+  saveRequest(r);
+  // 通知：依頼者（従業員発の場合）＋依頼元店舗の管理者＋その代理店舗
+  const notifTargets=[];
+  if(!r.byStore && r.by) notifTargets.push({role:'emp', code:r.by});
+  notifTargets.push(...storeAndProxies(r.store));
+  // 自店従業員が他店ヘルプを受けた場合は所属店舗にも通知（自店内応募では二重通知を避ける）
+  if(session.store !== r.store){
+    notifTargets.push(...storeAndProxies(session.store));
+  }
+  pushNotify(notifTargets, '✅ 応募が入りました',
+    `${spanTime(r)} ／ 応募時間：${fmtMinSpan(chosen.sMin, chosen.eMin)}`);
+  closeApplyModal();
+  renderApplyList();
+  updateApplyBadge();
+  toast(isFullyFilled(r)?'応募確定！この依頼は全時間が埋まりました':'応募が確定しました');
+};
+// 自分の応募区間を取り消す（区間ごと）
+function cancelApply(id, fillIdx){
+  const r=DB.requests.find(x=>x.id===id);
+  if(!r||!r.fills) return;
+  confirmModal('応募を取り消す','この時間帯への応募を取り消します。よろしいですか？',()=>{
+    const mine=r.fills.map((f,i)=>({f,i})).filter(o=>o.f.by===session.code);
+    const target=mine[fillIdx];
+    let cancelledRange=null;
+    if(target){
+      const f=target.f;
+      const [s,e]=reqRange({date:f.date,dateEnd:f.dateEnd,start:f.start,end:f.end});
+      cancelledRange=fmtMinSpan(s,e);
+      r.fills.splice(target.i,1);
+    }
+    saveRequest(r);
+    // 通知：依頼者（従業員発のみ）と依頼元店舗管理者＋その代理店舗
+    const targets=[];
+    if(!r.byStore && r.by) targets.push({role:'emp', code:r.by});
+    targets.push(...storeAndProxies(r.store));
+    // 自店従業員が他店ヘルプを取り消した場合は所属店舗にも通知（自店内では二重通知を避ける）
+    if(session.store !== r.store){
+      targets.push(...storeAndProxies(session.store));
+    }
+    pushNotify(targets, '🚫 応募が取り消されました',
+      `${storeLabel(r.store)} ／ ${spanTime(r)}${cancelledRange?' ／ 取消時間：'+cancelledRange:''}`);
+    renderApplyList();
+    updateApplyBadge();
+    toast('応募を取り消しました');
+  });
+}
+</script>
+</body>
+</html>
