@@ -164,14 +164,21 @@ URL and log in as HQ.
 ### 8. (Optional) Daily keep-alive + cleanup
 
 On the free plan, Supabase pauses idle projects. The included workflow pings
-the project daily and deletes requests older than 30 days.
+the project (to prevent pausing) and deletes requests older than 30 days.
+
+**Important: the automatic daily schedule is disabled by default.** To avoid
+failing runs (and failure emails) before setup is complete, the workflow only
+runs manually at first (Actions tab > "Run workflow").
 
 1. Put this repo on GitHub.
 2. In **Settings → Secrets and variables → Actions**, add:
    `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `CRON_SECRET` (same as the Edge
    Function secret).
-3. The workflow in `.github/workflows/keepalive.yml` runs daily and can be
-   triggered manually from the Actions tab.
+3. Test it manually from the Actions tab ("Keep Supabase Alive" > "Run
+   workflow").
+4. To enable the daily automatic run, after setting the secrets, uncomment
+   the two `schedule:` lines (remove the leading `#`) in
+   `.github/workflows/keepalive.yml`.
 
 ### 9. Tighten auth rate limits (recommended)
 
