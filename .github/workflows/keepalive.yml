@@ -1,7 +1,18 @@
 name: Keep Supabase Alive
 
-# Runs once a day to (1) keep the Supabase project from pausing on the
-# free plan, and (2) delete help requests older than 30 days.
+# Runs (1) a keep-alive ping so the Supabase project doesn't pause on the
+# free plan, and (2) a cleanup of help requests older than 30 days.
+#
+# ----------------------------------------------------------------------
+# IMPORTANT: The daily schedule is DISABLED by default.
+#
+# Out of the box this workflow only runs when you trigger it manually
+# (Actions tab > "Keep Supabase Alive" > "Run workflow"). This prevents
+# failing runs (and failure emails) before you have finished setup.
+#
+# To enable the daily automatic run AFTER you have set the repository
+# secrets below, simply uncomment the two "schedule:" lines further down.
+# ----------------------------------------------------------------------
 #
 # Required GitHub repository secrets (Settings > Secrets and variables > Actions):
 #   SUPABASE_URL        e.g. https://xxxx.supabase.co
@@ -9,10 +20,14 @@ name: Keep Supabase Alive
 #   CRON_SECRET         the same value set in the Supabase Edge Function secrets
 
 on:
-  schedule:
-    # 00:00 UTC every day (= 09:00 JST). Adjust as you like.
-    - cron: '0 0 * * *'
-  workflow_dispatch:   # allow manual runs from the Actions tab
+  # --- Daily automatic run (DISABLED by default) ---
+  # Uncomment the next two lines after you have configured the secrets
+  # above, to run this every day at 00:00 UTC (= 09:00 JST).
+  # schedule:
+  #   - cron: '0 0 * * *'
+
+  # Manual run from the Actions tab (always available).
+  workflow_dispatch:
 
 jobs:
   ping:
